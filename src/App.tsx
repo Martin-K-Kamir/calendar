@@ -1,9 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { Calendar } from "@/components/calendar";
 
 export default function App() {
     return (
-        <h1 className="text-3xl font-bold underline">
-            Hello world! <Button variant="default">Button</Button>
-        </h1>
+        <ThemeProvider>
+            <div className="min-h-screen bg-white dark:bg-zinc-950 p-8 grid">
+                <Calendar />
+            </div>
+        </ThemeProvider>
     );
 }
