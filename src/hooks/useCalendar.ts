@@ -1,78 +1,173 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
+import {
+    eachDayOfInterval,
+    subMonths,
+    addMonths,
+    startOfDay,
+    endOfDay,
+} from "date-fns";
+import { useSettings } from "@/hooks/useSettings";
+import { useEvents } from "@/hooks/useEvents";
+import { DayEvent, Event, FullDayEvent } from "@/providers/EventsProvider";
+import {
+    getDay,
+    getFirstWeek,
+    getLastWeek,
+    getWeekIndex,
+    getColStart,
+    getColEnd,
+    getCalendarWeeks,
+    hasOverlapingWeek,
+    compareFullDayEvents,
+    compareDayEvents,
+} from "@/lib";
 
-type Calendar = {
-    month: number;
-    year: number;
-    daysInMonth: number[];
-    startDay: number;
-    weekStart: number;
-};
-
-type CalendarWithHandlers = Calendar & {
-    handleNextMonth: () => void;
-    handlePreviousMonth: () => void;
-    handleTodayClick: () => void;
+type CalendarEventCell = {
+    event: Event;
+    colStart: number;
+    colEnd: number;
 };
 
 function useCalendar() {
-    const [month, setMonth] = useState<number>(new Date().getMonth());
-    const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [daysInMonth, setDaysInMonth] = useState<number[]>([]);
-    const [startDay, setStartDay] = useState<number>(0);
-    const [weekStart, setWeekStart] = useState<number>(1);
+    const { weekStartDay } = useSettings();
+    const { events } = useEvents();
+    const [selectedMonth, setSelectedMonth] = useState(new Date());
 
-    useEffect(() => {
-        const getDaysInMonth = (month: number, year: number) => {
-            const date = new Date(year, month, 1);
-            const days = [];
-            while (date.getMonth() === month) {
-                days.push(new Date(date).getDate());
-                date.setDate(date.getDate() + 1);
+    const calendarDays = useMemo(() => {
+        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
+        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
+        return eachDayOfInterval({ start: firstWeek, end: lastWeek });
+    }, [selectedMonth, weekStartDay]);
+
+    const sortedEvents = useMemo(() => {
+        return events.sort((a, b) => {
+            if (a.kind === "FULL_DAY_EVENT" && b.kind === "FULL_DAY_EVENT") {
+                return compareFullDayEvents(a, b);
             }
-            return days;
-        };
 
-        const getStartDay = (month: number, year: number) => {
-            return new Date(year, month, 1).getDay();
-        };
+            if (a.kind === "FULL_DAY_EVENT" && b.kind === "DAY_EVENT") {
+                return -1;
+            }
 
-        setDaysInMonth(getDaysInMonth(month, year));
-        setStartDay(getStartDay(month, year));
-    }, [month, year]);
+            if (a.kind === "DAY_EVENT" && b.kind === "FULL_DAY_EVENT") {
+                return 1;
+            }
+
+            if (a.kind === "DAY_EVENT" && b.kind === "DAY_EVENT") {
+                return compareDayEvents(a, b);
+            }
+
+            return 0;
+        });
+    }, [events]);
+
+    console.log(sortedEvents);
+
+    const calendarEvents = useMemo(() => {
+        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
+        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
+        const weeks = getCalendarWeeks(firstWeek, lastWeek, weekStartDay);
+        const calendarEventsMatrix: CalendarEventCell[][] = weeks.map(() => []);
+
+        sortedEvents.forEach(event => {
+            if (event.kind === "FULL_DAY_EVENT") {
+                fillWithFullDayEvents(event, weeks, calendarEventsMatrix);
+            } else if (event.kind === "DAY_EVENT") {
+                fillWithDayEvents(event, weeks, calendarEventsMatrix);
+            }
+        });
+
+        return calendarEventsMatrix;
+    }, [selectedMonth, weekStartDay, sortedEvents]);
+
+    function fillWithFullDayEvents(
+        event: FullDayEvent,
+        weeks: Date[],
+        calendarEventsMatrix: CalendarEventCell[][]
+    ) {
+        const from = startOfDay(event.from);
+        const to = endOfDay(event.to);
+        const startWeekIndex = getWeekIndex(weeks, from, weekStartDay);
+        const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
+
+        const isOverlappingBefore = hasOverlapingWeek(
+            endWeekIndex,
+            startWeekIndex
+        );
+
+        const isOverlappingAfter = hasOverlapingWeek(
+            startWeekIndex,
+            endWeekIndex
+        );
+
+        if (startWeekIndex === -1 && endWeekIndex === -1) {
+            return;
+        }
+
+        for (
+            let i = Math.max(startWeekIndex, 0);
+            i <= Math.max(endWeekIndex, startWeekIndex);
+            i++
+        ) {
+            calendarEventsMatrix[i].push({
+                event,
+                colStart: getColStart(
+                    i,
+                    startWeekIndex,
+                    getDay(from),
+                    isOverlappingAfter
+                ),
+                colEnd: getColEnd(
+                    i,
+                    endWeekIndex,
+                    getDay(to),
+                    isOverlappingBefore
+                ),
+            });
+        }
+    }
+
+    function fillWithDayEvents(
+        event: DayEvent,
+        weeks: Date[],
+        calendarEventsMatrix: CalendarEventCell[][]
+    ) {
+        const day = startOfDay(event.date);
+        const weekIndex = getWeekIndex(weeks, day, weekStartDay);
+
+        if (weekIndex === -1) {
+            return;
+        }
+
+        const dayOfWeek = getDay(day);
+
+        calendarEventsMatrix[weekIndex].push({
+            event,
+            colStart: dayOfWeek + 1,
+            colEnd: dayOfWeek + 2,
+        });
+    }
 
     function handleNextMonth() {
-        if (month === 11) {
-            setMonth(0);
-            setYear(prevYear => prevYear + 1);
-        } else {
-            setMonth(prev => prev + 1);
-        }
+        setSelectedMonth(prev => addMonths(prev, 1));
     }
 
     function handlePreviousMonth() {
-        if (month === 0) {
-            setMonth(11);
-            setYear(year - 1);
-        } else {
-            setMonth(prev => prev - 1);
-        }
+        setSelectedMonth(prev => subMonths(prev, 1));
     }
 
-    function handleTodayClick() {
-        setMonth(new Date().getMonth());
-        setYear(new Date().getFullYear());
+    function handleToday() {
+        setSelectedMonth(new Date());
     }
 
     return {
-        month,
-        year,
-        daysInMonth,
-        startDay,
-        weekStart,
+        selectedMonth,
+        calendarDays,
+        calendarEvents,
         handleNextMonth,
         handlePreviousMonth,
-        handleTodayClick,
-    };
+        handleToday,
+    } as const;
 }
 
-export { useCalendar, type Calendar, type CalendarWithHandlers };
+export { type CalendarEventCell, useCalendar };

@@ -1,4 +1,4 @@
-import { capitalize } from "./capitalize";
+import { capitalize } from "@/lib";
 
 export const getMonthNames = (locale?: string) => {
     const baseDate = new Date(Date.UTC(2021, 0, 1));

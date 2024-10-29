@@ -6,3 +6,10 @@
         --radius: 0.5rem;
     }
 }
+
+.x {
+    grid-auto-rows: minmax(100px, 1fr);
+}
+
+.b {
+}
