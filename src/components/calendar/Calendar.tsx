@@ -14,12 +14,12 @@ function Calendar() {
 
     return (
         <div className="flex flex-col gap-8 h-full w-full max-w-[1920px] mx-auto">
-            {/* <CalendarHeader
+            <CalendarHeader
                 date={selectedMonth}
                 onNextMonthClick={handleNextMonth}
                 onPreviousMonthClick={handlePreviousMonth}
                 onTodayClick={handleToday}
-            /> */}
+            />
             <CalendarGrid
                 calendarDays={calendarDays}
                 calendarEvents={calendarEvents}

@@ -11,15 +11,15 @@ type CalendarGridProps = {
 function CalendarGrid({ calendarDays, calendarEvents }: CalendarGridProps) {
     return (
         <div className="h-full grid grid-rows-[auto,1fr] text-zinc-950 dark:text-zinc-200">
-            {/* <div className="grid grid-cols-7 [&>div]:border-zinc-200 dark:[&>div]:border-zinc-800 [&>div]:border-t [&>div]:border-l [&>div:last-child]:border-r">
+            <div className="grid grid-cols-7 [&>div]:border-zinc-200 dark:[&>div]:border-zinc-800 [&>div]:border-t [&>div]:border-l [&>div:last-child]:border-r">
                 <CalendarWeekDays />
-            </div> */}
+            </div>
             <div className="relative h-full grid grid-cols-7 auto-rows-fr min-h-[40rem]">
-                {/* <div className="grid grid-cols-subgrid row-span-full col-span-full [&>div]:border-zinc-200 dark:[&>div]:border-zinc-800 [&>div]:border-l [&>div:nth-child(n+8)]:border-t [&>div:nth-child(7n)]:border-r [&>div:nth-last-child(-n+7)]:border-b">
+                <div className="grid grid-cols-subgrid row-span-full col-span-full [&>div]:border-zinc-200 dark:[&>div]:border-zinc-800 [&>div]:border-l [&>div:nth-child(n+8)]:border-t [&>div:nth-child(7n)]:border-r [&>div:nth-last-child(-n+7)]:border-b">
                     {calendarDays.map(day => (
                         <CalendarDay key={day.getTime()} day={day} />
                     ))}
-                </div> */}
+                </div>
                 <div className="grid grid-cols-subgrid auto-rows-fr	row-span-full col-span-full pointer-events-none">
                     {calendarEvents.map((row, rowIndex) => (
                         <div
