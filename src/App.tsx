@@ -9,8 +9,10 @@ export default function App() {
         <SettingsProvider>
             <ThemeProvider>
                 <EventsProvider>
-                    <div className="min-h-screen bg-white dark:bg-zinc-950 p-8 grid">
-                        <Calendar />
+                    <div className="h-screen min-h-[30rem]">
+                        <div className="bg-white dark:bg-zinc-950 h-full p-8">
+                            <Calendar />
+                        </div>
                     </div>
                     <Toaster />
                 </EventsProvider>

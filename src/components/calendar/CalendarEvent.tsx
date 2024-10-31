@@ -104,13 +104,13 @@ function CalendarDayEvent({
 }: CalendarDayEventProps) {
     return (
         <div className={cn(calendarDayEventVariants({ color }))}>
-            <span className="size-2 inline-block rounded-full mr-1.5"></span>
-            <p className="inline-block">
-                <span className="text-zinc-600 dark:text-zinc-400">
+            {/* <span className="size-2 inline-block rounded-full mr-1.5"></span> */}
+            <p className="inline-block truncate text-ellipsis">
+                {/* <span className="text-zinc-600 dark:text-zinc-400">
                     {formatTime(startTime)}
                 </span>
-                <span className="font-normal">{" - "}</span>
-                {title}
+                <span className="font-normal">{" - "}</span> */}
+                <span className="truncate">{title}</span>
             </p>
         </div>
     );

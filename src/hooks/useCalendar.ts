@@ -5,6 +5,8 @@ import {
     addMonths,
     startOfDay,
     endOfDay,
+    startOfWeek,
+    endOfWeek,
 } from "date-fns";
 import { useSettings } from "@/hooks/useSettings";
 import { useEvents } from "@/hooks/useEvents";
@@ -61,8 +63,6 @@ function useCalendar() {
         });
     }, [events]);
 
-    console.log(sortedEvents);
-
     const calendarEvents = useMemo(() => {
         const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
         const lastWeek = getLastWeek(selectedMonth, weekStartDay);
@@ -79,6 +79,20 @@ function useCalendar() {
 
         return calendarEventsMatrix;
     }, [selectedMonth, weekStartDay, sortedEvents]);
+
+    const calendarWeeks = useMemo(() => {
+        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
+        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
+        const weeks = getCalendarWeeks(firstWeek, lastWeek, weekStartDay);
+
+        return weeks.map(weekStart => {
+            const start = startOfWeek(weekStart, {
+                weekStartsOn: weekStartDay,
+            });
+            const end = endOfWeek(weekStart, { weekStartsOn: weekStartDay });
+            return eachDayOfInterval({ start, end });
+        });
+    }, [selectedMonth, weekStartDay]);
 
     function fillWithFullDayEvents(
         event: FullDayEvent,
@@ -164,10 +178,11 @@ function useCalendar() {
         selectedMonth,
         calendarDays,
         calendarEvents,
+        calendarWeeks,
         handleNextMonth,
         handlePreviousMonth,
         handleToday,
     } as const;
 }
 
-export { type CalendarEventCell, useCalendar };
+export { type CalendarEventCell as CalendarEventCell, useCalendar };
