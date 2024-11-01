@@ -10,10 +10,13 @@ function Calendar() {
         calendarDays,
         calendarWeeks,
         calendarEvents,
+        calendarDraftEvent,
         handleNextMonth,
         handlePreviousMonth,
         handleToday,
     } = useCalendar();
+
+    console.log(calendarDraftEvent);
 
     return (
         <div className="gap-8 h-full w-full max-w-[1920px] mx-auto">
@@ -41,6 +44,7 @@ function Calendar() {
                             <CalendarEventsList
                                 key={index}
                                 events={events}
+                                draftEvent={calendarDraftEvent?.[index]?.[0]}
                                 daysOfWeek={calendarWeeks[index]}
                             />
                         ))}

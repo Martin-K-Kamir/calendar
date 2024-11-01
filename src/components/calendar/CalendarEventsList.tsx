@@ -1,20 +1,13 @@
 import { useState, useRef, useLayoutEffect } from "react";
-import { X as XIcon } from "lucide-react";
 import { type CalendarEventCell } from "@/hooks/useCalendar";
-import { CalendarEvent } from "./CalendarEvent";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    PopoverClose,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatLongDate } from "@/lib";
-import { Button } from "@/components/ui/button";
+import { CalendarEventItem } from "./CalendarEventItem";
+import { CalendarOverflowEvents } from "./CalendarOverflowEvents";
+import { groupChildrenByColumn } from "@/lib";
 
 type CalendarEventsListProps = {
     events: CalendarEventCell[];
     daysOfWeek: Date[];
+    draftEvent: any;
 };
 
 type OverflowEvent = {
@@ -23,13 +16,11 @@ type OverflowEvent = {
     colEnd: number;
 };
 
-function calculateSize(...args: string[]) {
-    return args.reduce((acc, cur) => {
-        return acc + parseInt(cur);
-    }, 0);
-}
-
-function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
+function CalendarEventsList({
+    events,
+    daysOfWeek,
+    draftEvent,
+}: CalendarEventsListProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [overflowEvents, setOverflowEvents] = useState<
         Record<number, OverflowEvent>
@@ -46,60 +37,42 @@ function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
             if (containerElement == null) {
                 return;
             }
-
-            const children =
-                containerElement.querySelectorAll<HTMLElement>(
-                    "[data-event-item]"
-                );
-
-            children.forEach(child => {
-                child.style.removeProperty("display");
-            });
-
             setOverflowEvents({});
+
+            const children = getEventsChildren(containerElement);
+            const draftEventElement =
+                containerElement.querySelector<HTMLDivElement>(
+                    "[data-draft-event-item]"
+                );
 
             if (children.length === 0) {
                 return;
             }
 
-            const c = getComputedStyle(containerElement);
+            resetChildrenDisplay(children);
 
-            const remainingHeight =
-                containerElement.clientHeight -
-                44 -
-                calculateSize(
-                    c.paddingBlockStart,
-                    c.paddingBlockEnd,
-                    c.borderBlockStartWidth,
-                    c.borderBlockEndWidth,
-                    c.rowGap
-                );
+            const remainingHeight = calculateRemainingHeight(
+                containerElement,
+                44
+            );
 
-            const childrenByCol = Array.from(children).reduce((acc, child) => {
-                const colStart = parseInt(child.style.gridColumnStart);
-                const colEnd = parseInt(child.style.gridColumnEnd);
-
-                for (let i = colStart; i < colEnd; i++) {
-                    acc[i] = [...(acc[i] ?? []), child];
-                }
-
-                return acc;
-            }, {} as Record<string, HTMLElement[]>);
+            const childrenByCol = groupChildrenByColumn(children);
 
             Object.entries(childrenByCol).forEach(([col, children]) => {
-                let totalHeight = 0;
+                let totalHeight = draftEventElement?.clientHeight ?? 0;
                 let amount = 0;
 
                 children.forEach(child => {
                     const isOverflowing =
                         (totalHeight += child.clientHeight) > remainingHeight;
                     const isHidden = child.style.display === "none";
-                    amount++;
 
                     if (!(isOverflowing || isHidden)) {
                         return;
                     }
+
                     child.style.display = "none";
+                    amount++;
 
                     setOverflowEvents(prev => ({
                         ...prev,
@@ -116,13 +89,31 @@ function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
         observer.observe(containerRef.current);
 
         return () => observer.disconnect();
-    }, [events]);
+    }, [events, draftEvent]);
 
     return (
         <div
             className="grid grid-cols-subgrid grid-flow-dense col-span-full auto-rows-min pt-8 gap-y-1 overflow-hidden"
             ref={containerRef}
         >
+            {draftEvent && (
+                <div className="grid grid-cols-subgrid col-span-full z-50">
+                    <div
+                        className="px-1.5"
+                        data-draft-event-item
+                        style={{
+                            gridColumnStart: draftEvent.colStart,
+                            gridColumnEnd: draftEvent.colEnd,
+                        }}
+                    >
+                        <CalendarEventItem
+                            className="shadow-md shadow-zinc-400/50 dark:shadow-none pointer-events-none"
+                            {...draftEvent.draftEvent}
+                        />
+                    </div>
+                </div>
+            )}
+
             {events.map(({ event, colStart, colEnd }) => (
                 <div
                     key={event.id}
@@ -133,9 +124,10 @@ function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
                         gridColumnEnd: colEnd,
                     }}
                 >
-                    <CalendarEvent {...event} />
+                    <CalendarEventItem {...event} />
                 </div>
             ))}
+
             {Object.entries(overflowEvents).map(
                 ([key, { amount, colStart, colEnd }]) => (
                     <div
@@ -146,49 +138,13 @@ function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
                             gridColumnEnd: colEnd,
                         }}
                     >
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <button className="block w-full pointer-events-auto px-2 py-[3px] rounded-md text-xs font-semibold text-left bg-white text-zinc-900 hover:bg-zinc-100 dark:text-white dark:bg-zinc-950 dark:hover:bg-zinc-800">
-                                    {amount} more
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className="w-64 h-auto"
-                                align="center"
-                                side="top"
-                            >
-                                <PopoverClose asChild>
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="absolute right-2 top-2 size-6"
-                                    >
-                                        <XIcon className="size-4" />
-                                    </Button>
-                                </PopoverClose>
-                                <p className="pb-4">
-                                    {formatLongDate(daysOfWeek[colStart - 1])}
-                                </p>
-                                <ScrollArea>
-                                    <div className="space-y-1.5 pr-4 max-h-72">
-                                        {events
-                                            .filter(event => {
-                                                return (
-                                                    event.colStart <=
-                                                        colStart &&
-                                                    event.colEnd >= colEnd
-                                                );
-                                            })
-                                            .map(({ event }) => (
-                                                <CalendarEvent
-                                                    key={event.id}
-                                                    {...event}
-                                                />
-                                            ))}
-                                    </div>
-                                </ScrollArea>
-                            </PopoverContent>
-                        </Popover>
+                        <CalendarOverflowEvents
+                            amount={amount}
+                            colStart={colStart}
+                            colEnd={colEnd}
+                            daysOfWeek={daysOfWeek}
+                            events={events}
+                        />
                     </div>
                 )
             )}
@@ -197,3 +153,34 @@ function CalendarEventsList({ events, daysOfWeek }: CalendarEventsListProps) {
 }
 
 export { CalendarEventsList };
+
+function getEventsChildren(containerElement: Element): HTMLElement[] {
+    return Array.from(
+        containerElement.querySelectorAll<HTMLElement>("[data-event-item]")
+    );
+}
+
+function resetChildrenDisplay(children: HTMLElement[]): void {
+    children.forEach(child => {
+        child.style.removeProperty("display");
+    });
+}
+
+function calculateRemainingHeight(
+    containerElement: Element,
+    threshold = 0
+): number {
+    const c = getComputedStyle(containerElement);
+
+    const computedStyleSum = [
+        c.paddingBlockStart,
+        c.paddingBlockEnd,
+        c.borderBlockStartWidth,
+        c.borderBlockEndWidth,
+        c.rowGap,
+    ].reduce((acc, cur) => {
+        return acc + parseInt(cur);
+    }, 0);
+
+    return containerElement.clientHeight - computedStyleSum - threshold;
+}

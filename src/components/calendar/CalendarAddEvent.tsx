@@ -37,6 +37,8 @@ import {
     formatFullDate,
     formatLongDate,
     formatTime,
+    truncateString,
+    areValuesDefined,
 } from "@/lib";
 
 type CalendarAddEventProps = {
@@ -47,7 +49,7 @@ type CalendarAddEventProps = {
 const formSchema = z.object({
     title: z.string().min(1).max(27),
     description: z.string().max(100),
-    allDay: z.boolean(),
+    fullDay: z.boolean(),
     color: z.enum(EVENT_COLORS),
     date: z.date(),
     dateRange: z.object({
@@ -60,7 +62,13 @@ const formSchema = z.object({
 
 function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
     const { weekStartDay } = useSettings();
-    const { addEvent } = useEvents();
+    const {
+        addDayEvent,
+        addFullDayEvent,
+        addDraftDayEvent,
+        addDraftFullDayEvent,
+        removeDraftEvent,
+    } = useEvents();
     const titleInputRef = useRef<HTMLInputElement>(null);
     const currentTime = new Date();
 
@@ -69,7 +77,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
         defaultValues: {
             title: "",
             description: "",
-            allDay: false,
+            fullDay: false,
             color: EVENT_COLORS[0],
             date: day,
             dateRange: {
@@ -83,13 +91,35 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
         },
     });
 
-    const startTime = useWatch({
+    const watchAllFields = useWatch({
         control: form.control,
-        name: "startTime",
     });
 
+    const startTimeSlots = useMemo(() => generateTimeSlots(), []);
+    const endTimeSlots = useMemo(() => {
+        if (!areValuesDefined(watchAllFields)) {
+            return [];
+        }
+
+        const startTime = parseTimeString(watchAllFields.startTime);
+
+        return generateTimeSlotsFrom(startTime);
+    }, [watchAllFields.startTime]);
+
     useEffect(() => {
-        const [hours, minutes] = startTime.split(":").map(Number);
+        if (titleInputRef.current) {
+            titleInputRef.current.focus();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!watchAllFields.startTime) {
+            return;
+        }
+
+        const [hours, minutes] = watchAllFields.startTime
+            .split(":")
+            .map(Number);
         const date = new Date();
         date.setHours(hours, minutes, 0, 0);
 
@@ -101,60 +131,64 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
         }
 
         form.setValue("endTime", newEndTime);
-    }, [startTime, form]);
+    }, [watchAllFields.startTime]);
 
     useEffect(() => {
-        if (titleInputRef.current) {
-            titleInputRef.current.focus();
+        if (!areValuesDefined(watchAllFields)) {
+            return;
         }
-    }, []);
 
-    const startTimeDate = useMemo(() => {
-        return parseTimeString(startTime);
-    }, [startTime]);
+        const {
+            title,
+            fullDay,
+            color,
+            date,
+            dateRange,
+            description,
+            endTime,
+            startTime,
+        } = watchAllFields;
 
-    const startTimeSlots = useMemo(() => generateTimeSlots(), []);
-    const endTimeSlots = useMemo(
-        () => generateTimeSlotsFrom(startTimeDate),
-        [startTimeDate]
-    );
+        const baseEvent = {
+            title: title || "(No title)",
+            description: description,
+            color: color,
+        };
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        let description: string;
-
-        if (values.allDay) {
-            description = `${formatFullDate(
-                values.dateRange.from
-            )} - ${formatFullDate(values.dateRange.to)}`;
-
-            addEvent({
-                id: crypto.randomUUID(),
-                title: values.title,
-                description: values.description,
-                color: values.color,
-                kind: "FULL_DAY_EVENT",
-                from: values.dateRange.from,
-                to: values.dateRange.to,
+        if (fullDay) {
+            addDraftFullDayEvent({
+                ...baseEvent,
+                from: dateRange.from as Date,
+                to: dateRange.to as Date,
             });
         } else {
-            description = `${formatFullDate(values.date)} at ${
-                values.startTime
-            } - ${values.endTime}`;
-
-            addEvent({
-                id: crypto.randomUUID(),
-                title: values.title,
-                description: values.description,
-                color: values.color,
-                kind: "DAY_EVENT",
-                date: values.date,
-                startTime: parseTimeString(values.startTime),
-                endTime: parseTimeString(values.endTime),
+            addDraftDayEvent({
+                ...baseEvent,
+                date,
+                startTime: parseTimeString(startTime),
+                endTime: parseTimeString(endTime),
             });
         }
+    }, [watchAllFields, addDraftDayEvent, addDraftFullDayEvent]);
 
-        toast(`Event ${values.title} has been created`, {
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        const {
+            title,
+            color,
+            date,
+            dateRange,
             description,
+            endTime,
+            fullDay,
+            startTime,
+        } = values;
+
+        toast(`Event ${truncateString(title, 12)} has been created`, {
+            description: fullDay
+                ? `${formatFullDate(dateRange.from)} - ${formatFullDate(
+                      dateRange.to
+                  )}`
+                : `${formatFullDate(date)} at ${startTime} - ${endTime}`,
             action: {
                 label: "Undo",
                 onClick: () => console.log("Undo"),
@@ -162,6 +196,28 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
             position: "top-right",
         });
 
+        const baseEvent = {
+            title: title,
+            description: description,
+            color: color,
+        };
+
+        if (fullDay) {
+            addFullDayEvent({
+                ...baseEvent,
+                from: dateRange.from,
+                to: dateRange.to,
+            });
+        } else {
+            addDayEvent({
+                ...baseEvent,
+                date,
+                startTime: parseTimeString(startTime),
+                endTime: parseTimeString(endTime),
+            });
+        }
+
+        removeDraftEvent();
         onAddEvent?.();
     }
 
@@ -192,7 +248,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                     />
 
                     <FormField
-                        name="allDay"
+                        name="fullDay"
                         control={form.control}
                         render={({ field }) => (
                             <FormItem className="flex items-center space-x-3">
@@ -212,7 +268,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                     />
 
                     <div className="flex flex-wrap gap-3">
-                        {!form.watch("allDay") && (
+                        {!form.watch("fullDay") && (
                             <FormField
                                 name="date"
                                 control={form.control}
@@ -225,7 +281,9 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                                                         variant="outline"
                                                         className="font-normal"
                                                     >
-                                                        {formatLongDate(day)}
+                                                        {formatLongDate(
+                                                            field.value
+                                                        )}
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
@@ -245,7 +303,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                             />
                         )}
 
-                        {form.watch("allDay") && (
+                        {form.watch("fullDay") && (
                             <FormField
                                 name="dateRange"
                                 control={form.control}
@@ -285,7 +343,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                             />
                         )}
 
-                        {!form.watch("allDay") && (
+                        {!form.watch("fullDay") && (
                             <FormField
                                 name="startTime"
                                 control={form.control}
@@ -327,7 +385,7 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
                             />
                         )}
 
-                        {!form.watch("allDay") && (
+                        {!form.watch("fullDay") && (
                             <FormField
                                 name="endTime"
                                 control={form.control}

@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState, useCallback } from "react";
-import { UnionOmit } from "@/types";
 
 const EVENT_COLORS = [
     "pink",
@@ -38,24 +37,85 @@ type EventsProviderProps = {
 
 type EventsContext = {
     events: Event[];
-    addEvent: (event: Event) => void;
+    draftEvent: Event | null;
+    addFullDayEvent: (event: Omit<FullDayEvent, "id" | "kind">) => void;
+    addDayEvent: (event: Omit<DayEvent, "id" | "kind">) => void;
+    addDraftDayEvent: (draftEvent: Omit<DayEvent, "id" | "kind">) => void;
+    addDraftFullDayEvent: (
+        draftEvent: Omit<FullDayEvent, "id" | "kind">
+    ) => void;
+    removeDraftEvent: () => void;
 };
 
 const EventsProviderContext = createContext<EventsContext | null>(null);
 
+function createEvent<T extends Event["kind"]>(
+    kind: T,
+    event: T extends "FULL_DAY_EVENT"
+        ? Omit<FullDayEvent, "id" | "kind">
+        : Omit<DayEvent, "id" | "kind">
+): T extends "FULL_DAY_EVENT" ? FullDayEvent : DayEvent {
+    const id = crypto.randomUUID();
+    return { ...event, id, kind } as T extends "FULL_DAY_EVENT"
+        ? FullDayEvent
+        : DayEvent;
+}
+
 function EventsProvider({ children }: EventsProviderProps) {
     const [events, setEvents] = useState<Event[]>(loadEventsFromLocalStorage);
+    const [draftEvent, setDraftEvent] = useState<Event | null>(null);
 
     useEffect(() => {
         saveEventsToLocalStorage(events);
     }, [events]);
 
-    const addEvent = useCallback((event: UnionOmit<Event, "id">) => {
-        setEvents(e => [...e, { ...event, id: crypto.randomUUID() }]);
+    const addFullDayEvent = useCallback(
+        (event: Omit<FullDayEvent, "id" | "kind">) => {
+            setEvents(prevEvents => [
+                ...prevEvents,
+                createEvent("FULL_DAY_EVENT", event),
+            ]);
+        },
+        []
+    );
+
+    const addDayEvent = useCallback((event: Omit<DayEvent, "id" | "kind">) => {
+        setEvents(prevEvents => [
+            ...prevEvents,
+            createEvent("DAY_EVENT", event),
+        ]);
+    }, []);
+
+    const addDraftDayEvent = useCallback(
+        (draftEvent: Omit<DayEvent, "id" | "kind">) => {
+            setDraftEvent(createEvent("DAY_EVENT", draftEvent));
+        },
+        []
+    );
+
+    const addDraftFullDayEvent = useCallback(
+        (draftEvent: Omit<FullDayEvent, "id" | "kind">) => {
+            setDraftEvent(createEvent("FULL_DAY_EVENT", draftEvent));
+        },
+        []
+    );
+
+    const removeDraftEvent = useCallback(() => {
+        setDraftEvent(null);
     }, []);
 
     return (
-        <EventsProviderContext.Provider value={{ events, addEvent }}>
+        <EventsProviderContext.Provider
+            value={{
+                events,
+                draftEvent,
+                addFullDayEvent,
+                addDayEvent,
+                addDraftDayEvent,
+                addDraftFullDayEvent,
+                removeDraftEvent,
+            }}
+        >
             {children}
         </EventsProviderContext.Provider>
     );

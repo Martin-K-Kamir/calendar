@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isToday, isFirstDayOfMonth } from "date-fns";
 import { X as XIcon } from "lucide-react";
 import { cn, formatDate } from "@/lib";
@@ -10,13 +10,21 @@ import {
     PopoverClose,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { useEvents } from "@/hooks/useEvents";
 
 type CalendarDayProps = {
     day: Date;
 };
 
 function CalendarDay({ day }: CalendarDayProps) {
+    const { removeDraftEvent } = useEvents();
     const [popoverOpen, setPopoverOpen] = useState(false);
+
+    useEffect(() => {
+        if (!popoverOpen) {
+            removeDraftEvent();
+        }
+    }, [popoverOpen]);
 
     return (
         <Popover modal={false} open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -41,7 +49,7 @@ function CalendarDay({ day }: CalendarDayProps) {
                 align="start"
                 alignOffset={10}
                 sideOffset={8}
-                className="w-auto min-w-80"
+                className="w-[22rem]"
             >
                 <PopoverClose asChild>
                     <Button
