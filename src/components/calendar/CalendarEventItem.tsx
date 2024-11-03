@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import {
     X as XIcon,
@@ -18,7 +18,7 @@ import {
 } from "@/providers/EventsProvider";
 import { CalendarUpdateEvent } from "./CalendarUpdateEvent";
 import { Button } from "@/components/ui/button";
-import { formatLongDate, formatTime, cn } from "@/lib";
+import { formatLongDate, formatTime, cn, truncateString } from "@/lib";
 import { useEvents } from "@/hooks/useEvents";
 
 type CalendarEventItemProps = {
@@ -34,6 +34,18 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     const { title, description, color } = event || {};
     let eventItem: React.ReactNode;
     let time: string = "";
+
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+
+        if (!isPopoverOpen) {
+            timeoutId = setTimeout(() => {
+                setIsEditing(false);
+            }, 300);
+        }
+
+        return () => clearTimeout(timeoutId);
+    }, [isPopoverOpen]);
 
     if (event.kind === "FULL_DAY_EVENT") {
         const { from, to } = event;
@@ -57,12 +69,11 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     function handleRemoveEvent() {
         const revertRemoval = removeEvent(event.id);
 
-        toast(`Event ${title} has been removed`, {
+        toast(`Event "${truncateString(title, 12)}" has been removed`, {
             action: {
                 label: "Undo",
                 onClick: () => revertRemoval(event),
             },
-            position: "top-right",
         });
     }
 
@@ -72,10 +83,6 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
 
     function handleClose() {
         setIsPopoverOpen(false);
-
-        setTimeout(() => {
-            setIsEditing(false);
-        }, 250);
     }
 
     return (
@@ -85,7 +92,8 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"
-                align="center"
+                align="start"
+                sticky="always"
                 className="w-[22rem] pb-4"
             >
                 <div className="flex justify-end gap-1.5 translate-x-2 -translate-y-2">
@@ -125,7 +133,12 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
                         color={color}
                     />
                 )}
-                {isEditing && <CalendarUpdateEvent event={event} />}
+                {isEditing && (
+                    <CalendarUpdateEvent
+                        event={event}
+                        onUpdateEvent={() => setIsPopoverOpen(false)}
+                    />
+                )}
             </PopoverContent>
         </Popover>
     );
@@ -216,17 +229,17 @@ function EventItemPreview({
         <div>
             <div className="grid grid-cols-[min-content,auto] items-baseline gap-3">
                 <span
-                    className={`inline-block size-3.5 rounded bg-${color}-600`}
+                    className={`inline-block size-3.5 rounded bg-${color}-600 translate-y-[1.5px]`}
                 ></span>
                 <p className="text-lg font-semibold line-clamp-2">{title}</p>
             </div>
 
             <div>
-                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300 mt-1">
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mt-1.5">
                     {time}
                 </p>
                 {description && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">
+                    <p className="text-sm text-zinc-700 dark:text-zinc-300 mt-1.5">
                         {description}
                     </p>
                 )}

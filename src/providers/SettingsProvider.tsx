@@ -7,23 +7,11 @@ type SettingsProviderProps = {
 type SettingsProviderState = {
     locale?: string;
     weekStartDay: 0 | 1;
-    renderWeekend: boolean;
-    renderWeekendEvents: boolean;
-    renderNonMonthDays: boolean;
-    renderNonMonthEvents: boolean;
-    highlighPastDays: boolean;
-    disableAddingPastEvents: boolean;
 };
 
 const initialState: SettingsProviderState = {
     locale: undefined,
     weekStartDay: 1,
-    renderWeekend: true,
-    renderWeekendEvents: true,
-    renderNonMonthDays: true,
-    renderNonMonthEvents: true,
-    highlighPastDays: false,
-    disableAddingPastEvents: false,
 };
 
 const SettingsProviderContext = createContext<

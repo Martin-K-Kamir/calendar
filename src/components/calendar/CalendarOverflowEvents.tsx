@@ -43,7 +43,7 @@ function CalendarOverflowEvents({
                         <XIcon className="size-4" />
                     </Button>
                 </PopoverClose>
-                <p className="pb-4 text-lg font-semibold">
+                <p className="pb-4 text-md font-semibold">
                     {formatLongDate(daysOfWeek[colStart - 1])}
                 </p>
                 <ScrollArea>

@@ -18,21 +18,25 @@ type CalendarDayProps = {
 
 function CalendarDay({ day }: CalendarDayProps) {
     const { removeDraftEvent } = useEvents();
-    const [popoverOpen, setPopoverOpen] = useState(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     useEffect(() => {
-        if (!popoverOpen) {
+        if (!isPopoverOpen) {
             removeDraftEvent();
         }
-    }, [popoverOpen]);
+    }, [isPopoverOpen]);
 
     return (
-        <Popover modal={false} open={popoverOpen} onOpenChange={setPopoverOpen}>
+        <Popover
+            modal={false}
+            open={isPopoverOpen}
+            onOpenChange={setIsPopoverOpen}
+        >
             <PopoverTrigger asChild>
                 <div className="p-1.5 space-y-1.5">
                     <div
                         className={cn(
-                            "justify-self-center text-xs px-[0.3em] py-[0.25em] min-w-5 text-center leading-none rounded-md font-semibold",
+                            "justify-self-center text-xs px-[0.3em] py-[0.25em] min-w-5 text-center leading-none rounded font-semibold",
                             isToday(day) &&
                                 "text-white bg-blue-500 dark:bg-blue-700"
                         )}
@@ -61,8 +65,8 @@ function CalendarDay({ day }: CalendarDayProps) {
                     </Button>
                 </PopoverClose>
                 <CalendarAddEvent
-                    day={day}
-                    onAddEvent={() => setPopoverOpen(false)}
+                    date={day}
+                    onAddEvent={() => setIsPopoverOpen(false)}
                 />
             </PopoverContent>
         </Popover>

@@ -14,7 +14,7 @@ export default function App() {
                             <Calendar />
                         </div>
                     </div>
-                    <Toaster />
+                    <Toaster position="top-right" />
                 </EventsProvider>
             </ThemeProvider>
         </SettingsProvider>

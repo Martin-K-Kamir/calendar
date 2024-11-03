@@ -36,9 +36,9 @@ import {
     areValuesDefined,
 } from "@/lib";
 
-const formSchema = z.object({
-    title: z.string().min(1).max(27),
-    description: z.string().max(100),
+const eventFormSchema = z.object({
+    title: z.string().min(1).max(80),
+    description: z.string().max(500),
     fullDay: z.boolean(),
     color: z.enum(EVENT_COLORS),
     date: z.date(),
@@ -51,32 +51,35 @@ const formSchema = z.object({
 });
 
 type CalendarEventFormProps = {
-    defaultFormValues: Partial<z.infer<typeof formSchema>>;
+    defaultFormValues: Partial<z.infer<typeof eventFormSchema>>;
+    onSubmit: (values: z.infer<typeof eventFormSchema>) => void;
+    onWatch?: (values: z.infer<typeof eventFormSchema>) => void;
 };
 
-function CalendarEventForm({ defaultFormValues }: CalendarEventFormProps) {
+function CalendarEventForm({
+    defaultFormValues,
+    onSubmit,
+    onWatch,
+}: CalendarEventFormProps) {
     const { weekStartDay } = useSettings();
     const titleInputRef = useRef<HTMLInputElement>(null);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof eventFormSchema>>({
+        resolver: zodResolver(eventFormSchema),
         defaultValues: defaultFormValues,
     });
 
-    const watchAllFields = useWatch({
+    const watchStartTime = useWatch({
         control: form.control,
+        name: "startTime",
     });
 
     const startTimeSlots = useMemo(() => generateTimeSlots(), []);
     const endTimeSlots = useMemo(() => {
-        if (!areValuesDefined(watchAllFields)) {
-            return [];
-        }
-
-        const startTime = parseTimeString(watchAllFields.startTime);
+        const startTime = parseTimeString(watchStartTime);
 
         return generateTimeSlotsFrom(startTime);
-    }, [watchAllFields.startTime]);
+    }, [watchStartTime]);
 
     useEffect(() => {
         if (titleInputRef.current) {
@@ -85,27 +88,46 @@ function CalendarEventForm({ defaultFormValues }: CalendarEventFormProps) {
     }, []);
 
     useEffect(() => {
-        if (!watchAllFields.startTime) {
+        // if (!watchStartTime) {
+        //     return;
+        // }
+        // const [hours, minutes] = watchStartTime.split(":").map(Number);
+        // const date = new Date();
+        // date.setHours(hours, minutes, 0, 0);
+        // let newEndTime;
+        // if (hours >= 23) {
+        //     newEndTime = formatTime(new Date(date.setHours(23, 45, 0, 0)));
+        // } else {
+        //     newEndTime = formatTime(addHours(date, 1));
+        // }
+        // form.setValue("endTime", newEndTime);
+    }, [watchStartTime]);
+
+    useEffect(() => {
+        onWatch?.(form.getValues());
+    }, [form.getValues]);
+
+    useEffect(() => {
+        if (!onWatch) {
             return;
         }
 
-        const [hours, minutes] = watchAllFields.startTime
-            .split(":")
-            .map(Number);
-        const date = new Date();
-        date.setHours(hours, minutes, 0, 0);
+        const subscription = form.watch(values => {
+            if (!areValuesDefined(values)) {
+                return;
+            }
 
-        let newEndTime;
-        if (hours >= 23) {
-            newEndTime = formatTime(new Date(date.setHours(23, 45, 0, 0)));
-        } else {
-            newEndTime = formatTime(addHours(date, 1));
-        }
+            onWatch({
+                ...values,
+                dateRange: {
+                    from: values.dateRange?.from ?? values.date,
+                    to: values.dateRange?.to ?? values.date,
+                },
+            });
+        });
 
-        form.setValue("endTime", newEndTime);
-    }, [watchAllFields.startTime]);
-
-    function onSubmit(values: z.infer<typeof formSchema>) {}
+        return () => subscription.unsubscribe();
+    }, [form.watch]);
 
     return (
         <Form {...form}>
@@ -364,4 +386,4 @@ function CalendarEventForm({ defaultFormValues }: CalendarEventFormProps) {
     );
 }
 
-export { CalendarEventForm, formSchema };
+export { CalendarEventForm, eventFormSchema };
