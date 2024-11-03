@@ -108,7 +108,7 @@ function CalendarEventsList({
                     >
                         <CalendarEventItem
                             className="shadow-md shadow-zinc-400/50 dark:shadow-none pointer-events-none"
-                            {...draftEvent.draftEvent}
+                            event={draftEvent.event}
                         />
                     </div>
                 </div>
@@ -124,7 +124,7 @@ function CalendarEventsList({
                         gridColumnEnd: colEnd,
                     }}
                 >
-                    <CalendarEventItem {...event} />
+                    <CalendarEventItem event={event} />
                 </div>
             ))}
 

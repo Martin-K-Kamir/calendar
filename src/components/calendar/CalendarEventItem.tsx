@@ -1,6 +1,11 @@
-import React from "react";
+import { useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib";
+import {
+    X as XIcon,
+    Trash2 as TrashIcon,
+    Pencil as PencilIcon,
+} from "lucide-react";
+import { toast } from "sonner";
 import {
     Popover,
     PopoverContent,
@@ -11,29 +16,117 @@ import {
     type DayEvent,
     type FullDayEvent,
 } from "@/providers/EventsProvider";
-import { formatTime } from "@/lib";
+import { CalendarUpdateEvent } from "./CalendarUpdateEvent";
+import { Button } from "@/components/ui/button";
+import { formatLongDate, formatTime, cn } from "@/lib";
+import { useEvents } from "@/hooks/useEvents";
 
-type CalendarEventItemProps = Event & {
+type CalendarEventItemProps = {
     className?: string;
+    event: Event;
 };
 
-function CalendarEventItem({ kind, ...rest }: CalendarEventItemProps) {
-    let content: React.ReactNode;
-    if (kind === "FULL_DAY_EVENT") {
-        content = <FullDayEventItem {...(rest as FullDayEvent)} />;
-    } else if (kind === "DAY_EVENT") {
-        content = <DayEventItem {...(rest as DayEvent)} />;
+function CalendarEventItem({ event, className }: CalendarEventItemProps) {
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const { removeEvent } = useEvents();
+
+    const { title, description, color } = event || {};
+    let eventItem: React.ReactNode;
+    let time: string = "";
+
+    if (event.kind === "FULL_DAY_EVENT") {
+        const { from, to } = event;
+
+        time = `${formatLongDate(from)} - ${formatLongDate(to)}`;
+
+        eventItem = <FullDayEventItem {...event} className={className} />;
+    } else if (event.kind === "DAY_EVENT") {
+        const { date, startTime, endTime } = event;
+
+        time = `${formatLongDate(date)} at ${formatTime(
+            startTime
+        )} - ${formatTime(endTime)}`;
+
+        eventItem = <DayEventItem {...event} className={className} />;
     } else {
-        const exhaustiveCheck: never = kind;
-        throw new Error(exhaustiveCheck);
+        const exhaustiveCheck: never = event;
+        throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
+    }
+
+    function handleRemoveEvent() {
+        const revertRemoval = removeEvent(event.id);
+
+        toast(`Event ${title} has been removed`, {
+            action: {
+                label: "Undo",
+                onClick: () => revertRemoval(event),
+            },
+            position: "top-right",
+        });
+    }
+
+    function handleEditEvent() {
+        setIsEditing(true);
+    }
+
+    function handleClose() {
+        setIsPopoverOpen(false);
+
+        setTimeout(() => {
+            setIsEditing(false);
+        }, 250);
     }
 
     return (
-        <Popover>
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-                <button className="block w-full">{content}</button>
+                <button className="block w-full">{eventItem}</button>
             </PopoverTrigger>
-            <PopoverContent>Place content for the popover here.</PopoverContent>
+            <PopoverContent
+                side="bottom"
+                align="center"
+                className="w-[22rem] pb-4"
+            >
+                <div className="flex justify-end gap-1.5 translate-x-2 -translate-y-2">
+                    {!isEditing && (
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className="size-6"
+                            onClick={handleEditEvent}
+                        >
+                            <PencilIcon className="size-3.5" />
+                        </Button>
+                    )}
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-6"
+                        onClick={handleRemoveEvent}
+                    >
+                        <TrashIcon className="size-3.5" />
+                    </Button>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-6"
+                        onClick={handleClose}
+                    >
+                        <XIcon className="size-4" />
+                    </Button>
+                </div>
+
+                {!isEditing && (
+                    <EventItemPreview
+                        title={title}
+                        description={description}
+                        time={time}
+                        color={color}
+                    />
+                )}
+                {isEditing && <CalendarUpdateEvent event={event} />}
+            </PopoverContent>
         </Popover>
     );
 }
@@ -103,6 +196,42 @@ function DayEventItem({
             <span className="font-normal">{" - "}</span>
             {title}
         </span>
+    );
+}
+
+type EventItemPreviewProps = {
+    title: string;
+    description?: string;
+    time: string;
+    color: string;
+};
+
+function EventItemPreview({
+    title,
+    description,
+    time,
+    color,
+}: EventItemPreviewProps) {
+    return (
+        <div>
+            <div className="grid grid-cols-[min-content,auto] items-baseline gap-3">
+                <span
+                    className={`inline-block size-3.5 rounded bg-${color}-600`}
+                ></span>
+                <p className="text-lg font-semibold line-clamp-2">{title}</p>
+            </div>
+
+            <div>
+                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300 mt-1">
+                    {time}
+                </p>
+                {description && (
+                    <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">
+                        {description}
+                    </p>
+                )}
+            </div>
+        </div>
     );
 }
 

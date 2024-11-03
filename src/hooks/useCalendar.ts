@@ -17,25 +17,23 @@ import {
 } from "@/providers/EventsProvider";
 import {
     getDay,
-    getFirstWeek,
-    getLastWeek,
     getWeekIndex,
     getColStart,
     getColEnd,
     getCalendarWeeks,
+    getCalendarDays,
     hasOverlapingWeek,
     compareFullDayEvents,
     compareDayEvents,
 } from "@/lib";
 
-type CalendarEventCell = {
-    event: Event;
+type Cell = {
     colStart: number;
     colEnd: number;
 };
 
-type CalendarPendingEventCell = Omit<CalendarEventCell, "event"> & {
-    draftEvent: Event;
+type CalendarEventCell = Cell & {
+    event: Event;
 };
 
 function useCalendar() {
@@ -43,10 +41,12 @@ function useCalendar() {
     const { events, draftEvent } = useEvents();
     const [selectedMonth, setSelectedMonth] = useState(new Date());
 
+    const calendarWeeks = useMemo(() => {
+        return getCalendarWeeks(selectedMonth, weekStartDay);
+    }, [selectedMonth, weekStartDay]);
+
     const calendarDays = useMemo(() => {
-        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
-        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
-        return eachDayOfInterval({ start: firstWeek, end: lastWeek });
+        return getCalendarDays(selectedMonth, weekStartDay);
     }, [selectedMonth, weekStartDay]);
 
     const sortedEvents = useMemo(() => {
@@ -71,118 +71,65 @@ function useCalendar() {
         });
     }, [events]);
 
-    const calendarEvents = useMemo(() => {
-        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
-        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
-        const weeks = getCalendarWeeks(firstWeek, lastWeek, weekStartDay);
-        const eventsMatrix: CalendarEventCell[][] = weeks.map(() => []);
-
-        sortedEvents.forEach(event => {
-            if (event.kind === "FULL_DAY_EVENT") {
-                fillWithFullDayEvents(event, weeks, eventsMatrix);
-            } else if (event.kind === "DAY_EVENT") {
-                fillWithDayEvents(event, weeks, eventsMatrix);
-            } else {
-                const exhaustiveCheck: never = event;
-                throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
-            }
-        });
-
-        return eventsMatrix;
-    }, [selectedMonth, weekStartDay, sortedEvents]);
-
-    const calendarDraftEvent = useMemo(() => {
-        if (draftEvent == null) {
-            return null;
-        }
-
-        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
-        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
-        const weeks = getCalendarWeeks(firstWeek, lastWeek, weekStartDay);
-        const eventsMatrix: CalendarPendingEventCell[][] = weeks.map(() => []);
-
-        if (draftEvent.kind === "FULL_DAY_EVENT") {
-            const from = startOfDay(draftEvent.from);
-            const to = endOfDay(draftEvent.to);
-            const startWeekIndex = getWeekIndex(weeks, from, weekStartDay);
-            const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
-
-            const isOverlappingBefore = hasOverlapingWeek(
-                endWeekIndex,
-                startWeekIndex
-            );
-
-            const isOverlappingAfter = hasOverlapingWeek(
-                startWeekIndex,
-                endWeekIndex
-            );
-
-            if (startWeekIndex === -1 && endWeekIndex === -1) {
-                return;
-            }
-
-            for (
-                let i = Math.max(startWeekIndex, 0);
-                i <= Math.max(endWeekIndex, startWeekIndex);
-                i++
-            ) {
-                eventsMatrix[i].push({
-                    draftEvent,
-                    colStart: getColStart(
-                        i,
-                        startWeekIndex,
-                        getDay(from),
-                        isOverlappingAfter
-                    ),
-                    colEnd: getColEnd(
-                        i,
-                        endWeekIndex,
-                        getDay(to),
-                        isOverlappingBefore
-                    ),
-                });
-            }
-        } else if (draftEvent.kind === "DAY_EVENT") {
-            const day = startOfDay(draftEvent.date);
-            const weekIndex = getWeekIndex(weeks, day, weekStartDay);
-
-            if (weekIndex === -1) {
-                return;
-            }
-
-            const dayOfWeek = getDay(day);
-
-            eventsMatrix[weekIndex].push({
-                draftEvent,
-                colStart: dayOfWeek + 1,
-                colEnd: dayOfWeek + 2,
-            });
-        } else {
-            const exhaustiveCheck: never = draftEvent;
-            throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
-        }
-
-        return eventsMatrix;
-    }, [draftEvent, selectedMonth, weekStartDay]);
-
-    const calendarWeeks = useMemo(() => {
-        const firstWeek = getFirstWeek(selectedMonth, weekStartDay);
-        const lastWeek = getLastWeek(selectedMonth, weekStartDay);
-        const weeks = getCalendarWeeks(firstWeek, lastWeek, weekStartDay);
-
-        return weeks.map(weekStart => {
+    const calendarWeeksWithDays = useMemo(() => {
+        return calendarWeeks.map(weekStart => {
             const start = startOfWeek(weekStart, {
                 weekStartsOn: weekStartDay,
             });
             const end = endOfWeek(weekStart, { weekStartsOn: weekStartDay });
             return eachDayOfInterval({ start, end });
         });
-    }, [selectedMonth, weekStartDay]);
+    }, [calendarWeeks, weekStartDay]);
 
-    function fillWithFullDayEvents(
+    const calendarEvents = useMemo(() => {
+        const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
+
+        sortedEvents.forEach(event =>
+            categorizeEvent(event, calendarWeeks, eventsMatrix)
+        );
+
+        return eventsMatrix;
+    }, [calendarWeeks, sortedEvents]);
+
+    const calendarDraftEvent = useMemo(() => {
+        if (draftEvent == null) {
+            return null;
+        }
+
+        const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
+
+        categorizeEvent(draftEvent, calendarWeeks, eventsMatrix);
+
+        return eventsMatrix.map(week => {
+            const [event] = week;
+
+            if (event == null) {
+                return null;
+            }
+
+            return event;
+        });
+    }, [calendarWeeks, draftEvent]);
+
+    function categorizeEvent(
+        event: Event,
+        weeks: Date[],
+        matrix: CalendarEventCell[][]
+    ) {
+        if (event.kind === "FULL_DAY_EVENT") {
+            categorizeFullDayEvent(event, weeks, matrix);
+        } else if (event.kind === "DAY_EVENT") {
+            categorizeDayEvent(event, weeks, matrix);
+        } else {
+            const exhaustiveCheck: never = event;
+            throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
+        }
+    }
+
+    function categorizeFullDayEvent(
         event: FullDayEvent,
         weeks: Date[],
-        calendarEventsMatrix: CalendarEventCell[][]
+        matrix: CalendarEventCell[][]
     ) {
         const from = startOfDay(event.from);
         const to = endOfDay(event.to);
@@ -208,7 +155,7 @@ function useCalendar() {
             i <= Math.max(endWeekIndex, startWeekIndex);
             i++
         ) {
-            calendarEventsMatrix[i].push({
+            matrix[i].push({
                 event,
                 colStart: getColStart(
                     i,
@@ -226,10 +173,10 @@ function useCalendar() {
         }
     }
 
-    function fillWithDayEvents(
+    function categorizeDayEvent(
         event: DayEvent,
         weeks: Date[],
-        calendarEventsMatrix: CalendarEventCell[][]
+        matrix: CalendarEventCell[][]
     ) {
         const day = startOfDay(event.date);
         const weekIndex = getWeekIndex(weeks, day, weekStartDay);
@@ -240,7 +187,7 @@ function useCalendar() {
 
         const dayOfWeek = getDay(day);
 
-        calendarEventsMatrix[weekIndex].push({
+        matrix[weekIndex].push({
             event,
             colStart: dayOfWeek + 1,
             colEnd: dayOfWeek + 2,
@@ -263,7 +210,7 @@ function useCalendar() {
         selectedMonth,
         calendarDays,
         calendarEvents,
-        calendarWeeks,
+        calendarWeeksWithDays,
         calendarDraftEvent,
         handleNextMonth,
         handlePreviousMonth,

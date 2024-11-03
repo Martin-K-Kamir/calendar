@@ -34,16 +34,13 @@ import {
     generateTimeSlots,
     generateTimeSlotsFrom,
     parseTimeString,
-    formatFullDate,
     formatLongDate,
     formatTime,
-    truncateString,
     areValuesDefined,
 } from "@/lib";
 
 type CalendarAddEventProps = {
-    day: Date;
-    onAddEvent?: () => void;
+    event: Event;
 };
 
 const formSchema = z.object({
@@ -60,35 +57,31 @@ const formSchema = z.object({
     endTime: z.string(),
 });
 
-function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
+function CalendarUpdateEvent({ event }: CalendarAddEventProps) {
     const { weekStartDay } = useSettings();
-    const {
-        addDayEvent,
-        addFullDayEvent,
-        addDraftDayEvent,
-        addDraftFullDayEvent,
-        removeEvent,
-        removeDraftEvent,
-    } = useEvents();
+    const {} = useEvents();
     const titleInputRef = useRef<HTMLInputElement>(null);
     const currentTime = new Date();
+    const isFullDayEvent = event.kind === "FULL_DAY_EVENT";
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
-            description: "",
-            fullDay: false,
-            color: EVENT_COLORS[0],
-            date: day,
+            title: event.title,
+            description: event.description,
+            fullDay: isFullDayEvent,
+            color: EVENT_COLORS[EVENT_COLORS.findIndex(c => c === event.color)],
+            date: isFullDayEvent ? event.from : event.date,
             dateRange: {
-                from: day,
-                to: day,
+                from: isFullDayEvent ? event.from : event.date,
+                to: isFullDayEvent ? event.to : event.date,
             },
-            startTime: formatTime(roundToNearest15Minutes(currentTime)),
-            endTime: formatTime(
-                roundToNearest15Minutes(addHours(currentTime, 1))
-            ),
+            startTime: isFullDayEvent
+                ? formatTime(roundToNearest15Minutes(currentTime))
+                : formatTime(event.startTime),
+            endTime: isFullDayEvent
+                ? formatTime(roundToNearest15Minutes(addHours(currentTime, 1)))
+                : formatTime(event.endTime),
         },
     });
 
@@ -134,93 +127,8 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
         form.setValue("endTime", newEndTime);
     }, [watchAllFields.startTime]);
 
-    useEffect(() => {
-        if (!areValuesDefined(watchAllFields)) {
-            return;
-        }
-
-        const {
-            title,
-            fullDay,
-            color,
-            date,
-            dateRange,
-            description,
-            endTime,
-            startTime,
-        } = watchAllFields;
-
-        const baseEvent = {
-            title: title || "(No title)",
-            description: description,
-            color: color,
-        };
-
-        if (fullDay) {
-            addDraftFullDayEvent({
-                ...baseEvent,
-                from: dateRange.from as Date,
-                to: dateRange.to as Date,
-            });
-        } else {
-            addDraftDayEvent({
-                ...baseEvent,
-                date,
-                startTime: parseTimeString(startTime),
-                endTime: parseTimeString(endTime),
-            });
-        }
-    }, [watchAllFields, addDraftDayEvent, addDraftFullDayEvent]);
-
     function onSubmit(values: z.infer<typeof formSchema>) {
-        const {
-            title,
-            color,
-            date,
-            dateRange,
-            description,
-            endTime,
-            fullDay,
-            startTime,
-        } = values;
-
-        let eventId: Event["id"];
-        const baseEvent = {
-            title: title,
-            description: description,
-            color: color,
-        };
-
-        if (fullDay) {
-            eventId = addFullDayEvent({
-                ...baseEvent,
-                from: dateRange.from,
-                to: dateRange.to,
-            });
-        } else {
-            eventId = addDayEvent({
-                ...baseEvent,
-                date,
-                startTime: parseTimeString(startTime),
-                endTime: parseTimeString(endTime),
-            });
-        }
-
-        removeDraftEvent();
-        onAddEvent?.();
-
-        toast(`Event ${truncateString(title, 12)} has been created`, {
-            description: fullDay
-                ? `${formatFullDate(dateRange.from)} - ${formatFullDate(
-                      dateRange.to
-                  )}`
-                : `${formatFullDate(date)} at ${startTime} - ${endTime}`,
-            action: {
-                label: "Undo",
-                onClick: () => removeEvent(eventId),
-            },
-            position: "top-right",
-        });
+        console.log(values);
     }
 
     return (
@@ -497,4 +405,4 @@ function CalendarAddEvent({ day, onAddEvent }: CalendarAddEventProps) {
     );
 }
 
-export { CalendarAddEvent };
+export { CalendarUpdateEvent };

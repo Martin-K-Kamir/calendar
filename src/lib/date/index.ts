@@ -7,3 +7,4 @@ export { roundToNearest15Minutes } from "./roundToNearest15Minutes";
 export { getCalendarWeeks } from "./getCalendarWeeks";
 export { getMonthNames } from "./getMonthNames";
 export { getWeekdayNames } from "./getWeekdayNames";
+export { getCalendarDays } from "./getCalendarDays";

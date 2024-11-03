@@ -38,12 +38,13 @@ type EventsProviderProps = {
 type EventsContext = {
     events: Event[];
     draftEvent: Event | null;
-    addFullDayEvent: (event: Omit<FullDayEvent, "id" | "kind">) => void;
-    addDayEvent: (event: Omit<DayEvent, "id" | "kind">) => void;
+    addFullDayEvent: (event: Omit<FullDayEvent, "id" | "kind">) => Event["id"];
+    addDayEvent: (event: Omit<DayEvent, "id" | "kind">) => Event["id"];
     addDraftDayEvent: (draftEvent: Omit<DayEvent, "id" | "kind">) => void;
     addDraftFullDayEvent: (
         draftEvent: Omit<FullDayEvent, "id" | "kind">
     ) => void;
+    removeEvent: (eventId: Event["id"]) => (event: Event) => void;
     removeDraftEvent: () => void;
 };
 
@@ -71,19 +72,21 @@ function EventsProvider({ children }: EventsProviderProps) {
 
     const addFullDayEvent = useCallback(
         (event: Omit<FullDayEvent, "id" | "kind">) => {
-            setEvents(prevEvents => [
-                ...prevEvents,
-                createEvent("FULL_DAY_EVENT", event),
-            ]);
+            const newEvent = createEvent("FULL_DAY_EVENT", event);
+
+            setEvents(prevEvents => [...prevEvents, newEvent]);
+
+            return newEvent.id;
         },
         []
     );
 
     const addDayEvent = useCallback((event: Omit<DayEvent, "id" | "kind">) => {
-        setEvents(prevEvents => [
-            ...prevEvents,
-            createEvent("DAY_EVENT", event),
-        ]);
+        const newEvent = createEvent("DAY_EVENT", event);
+
+        setEvents(prevEvents => [...prevEvents, newEvent]);
+
+        return newEvent.id;
     }, []);
 
     const addDraftDayEvent = useCallback(
@@ -100,6 +103,16 @@ function EventsProvider({ children }: EventsProviderProps) {
         []
     );
 
+    const removeEvent = useCallback((eventId: Event["id"]) => {
+        setEvents(prevEvents =>
+            prevEvents.filter(event => event.id !== eventId)
+        );
+
+        return (event: Event) => {
+            setEvents(prevEvents => [...prevEvents, event]);
+        };
+    }, []);
+
     const removeDraftEvent = useCallback(() => {
         setDraftEvent(null);
     }, []);
@@ -113,6 +126,7 @@ function EventsProvider({ children }: EventsProviderProps) {
                 addDayEvent,
                 addDraftDayEvent,
                 addDraftFullDayEvent,
+                removeEvent,
                 removeDraftEvent,
             }}
         >

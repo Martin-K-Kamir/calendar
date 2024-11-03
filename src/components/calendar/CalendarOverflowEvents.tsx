@@ -43,7 +43,7 @@ function CalendarOverflowEvents({
                         <XIcon className="size-4" />
                     </Button>
                 </PopoverClose>
-                <p className="pb-4">
+                <p className="pb-4 text-lg font-semibold">
                     {formatLongDate(daysOfWeek[colStart - 1])}
                 </p>
                 <ScrollArea>
@@ -56,7 +56,10 @@ function CalendarOverflowEvents({
                                 );
                             })
                             .map(({ event }) => (
-                                <CalendarEventItem key={event.id} {...event} />
+                                <CalendarEventItem
+                                    key={event.id}
+                                    event={event}
+                                />
                             ))}
                     </div>
                 </ScrollArea>
