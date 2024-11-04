@@ -1,15 +1,9 @@
 import { addHours } from "date-fns";
 import { z } from "zod";
 import { toast } from "sonner";
-
 import { type Event, EVENT_COLORS } from "@/providers/EventsProvider";
 import { useEvents } from "@/hooks/useEvents";
-import {
-    roundToNearest15Minutes,
-    formatTime,
-    parseTimeString,
-    truncateString,
-} from "@/lib";
+import { roundToNearest15Minutes, formatTime, parseTimeString } from "@/lib";
 import { CalendarEventForm, eventFormSchema } from "./CalendarEventForm";
 
 type CalendarUpdateEventProps = {
@@ -81,9 +75,9 @@ function CalendarUpdateEvent({
 
         onUpdateEvent?.();
 
-        toast(`Event "${truncateString(title, 12)}" has been updated`, {
+        toast(`Událost byla aktualizována`, {
             action: {
-                label: "Undo",
+                label: "Vrátit akci",
                 onClick: () => updateEvent(event),
             },
         });

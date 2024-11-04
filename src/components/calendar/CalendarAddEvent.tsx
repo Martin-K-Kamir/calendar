@@ -3,13 +3,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { type Event, EVENT_COLORS } from "@/providers/EventsProvider";
 import { useEvents } from "@/hooks/useEvents";
-import {
-    roundToNearest15Minutes,
-    parseTimeString,
-    formatFullDate,
-    formatTime,
-    truncateString,
-} from "@/lib";
+import { roundToNearest15Minutes, parseTimeString, formatTime } from "@/lib";
 import { CalendarEventForm, eventFormSchema } from "./CalendarEventForm";
 
 type CalendarAddEventProps = {
@@ -51,7 +45,7 @@ function CalendarAddEvent({ date, onAddEvent }: CalendarAddEventProps) {
         const baseEvent = {
             description,
             color,
-            title: title || "(No title)",
+            title: title || "(bez názvu)",
         };
 
         if (fullDay) {
@@ -111,14 +105,9 @@ function CalendarAddEvent({ date, onAddEvent }: CalendarAddEventProps) {
         removeDraftEvent();
         onAddEvent?.();
 
-        toast(`Event "${truncateString(title, 12)}" has been created`, {
-            description: fullDay
-                ? `${formatFullDate(dateRange.from)} - ${formatFullDate(
-                      dateRange.to
-                  )}`
-                : `${formatFullDate(date)} at ${startTime} - ${endTime}`,
+        toast(`Událost byla vytvořena`, {
             action: {
-                label: "Undo",
+                label: "Vrátit akci",
                 onClick: () => removeEvent(eventId),
             },
         });

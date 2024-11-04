@@ -85,11 +85,11 @@ function useCalendar() {
         const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
 
         sortedEvents.forEach(event =>
-            categorizeEvent(event, calendarWeeks, eventsMatrix)
+            categorizeEvent(event, calendarWeeks, eventsMatrix, weekStartDay)
         );
 
         return eventsMatrix;
-    }, [calendarWeeks, sortedEvents]);
+    }, [calendarWeeks, sortedEvents, weekStartDay]);
 
     const calendarDraftEvent = useMemo(() => {
         if (draftEvent == null) {
@@ -98,7 +98,7 @@ function useCalendar() {
 
         const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
 
-        categorizeEvent(draftEvent, calendarWeeks, eventsMatrix);
+        categorizeEvent(draftEvent, calendarWeeks, eventsMatrix, weekStartDay);
 
         return eventsMatrix.map(week => {
             const [event] = week;
@@ -109,90 +109,7 @@ function useCalendar() {
 
             return event;
         });
-    }, [calendarWeeks, draftEvent]);
-
-    function categorizeEvent(
-        event: Event,
-        weeks: Date[],
-        matrix: CalendarEventCell[][]
-    ) {
-        if (event.kind === "FULL_DAY_EVENT") {
-            categorizeFullDayEvent(event, weeks, matrix);
-        } else if (event.kind === "DAY_EVENT") {
-            categorizeDayEvent(event, weeks, matrix);
-        } else {
-            const exhaustiveCheck: never = event;
-            throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
-        }
-    }
-
-    function categorizeFullDayEvent(
-        event: FullDayEvent,
-        weeks: Date[],
-        matrix: CalendarEventCell[][]
-    ) {
-        const from = startOfDay(event.from);
-        const to = endOfDay(event.to);
-        const startWeekIndex = getWeekIndex(weeks, from, weekStartDay);
-        const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
-
-        const isOverlappingBefore = hasOverlapingWeek(
-            endWeekIndex,
-            startWeekIndex
-        );
-
-        const isOverlappingAfter = hasOverlapingWeek(
-            startWeekIndex,
-            endWeekIndex
-        );
-
-        if (startWeekIndex === -1 && endWeekIndex === -1) {
-            return;
-        }
-
-        for (
-            let i = Math.max(startWeekIndex, 0);
-            i <= Math.max(endWeekIndex, startWeekIndex);
-            i++
-        ) {
-            matrix[i].push({
-                event,
-                colStart: getColStart(
-                    i,
-                    startWeekIndex,
-                    getDay(from),
-                    isOverlappingAfter
-                ),
-                colEnd: getColEnd(
-                    i,
-                    endWeekIndex,
-                    getDay(to),
-                    isOverlappingBefore
-                ),
-            });
-        }
-    }
-
-    function categorizeDayEvent(
-        event: DayEvent,
-        weeks: Date[],
-        matrix: CalendarEventCell[][]
-    ) {
-        const day = startOfDay(event.date);
-        const weekIndex = getWeekIndex(weeks, day, weekStartDay);
-
-        if (weekIndex === -1) {
-            return;
-        }
-
-        const dayOfWeek = getDay(day);
-
-        matrix[weekIndex].push({
-            event,
-            colStart: dayOfWeek + 1,
-            colEnd: dayOfWeek + 2,
-        });
-    }
+    }, [calendarWeeks, draftEvent, weekStartDay]);
 
     function handleNextMonth() {
         setSelectedMonth(prev => addMonths(prev, 1));
@@ -216,6 +133,81 @@ function useCalendar() {
         handlePreviousMonth,
         handleToday,
     } as const;
+}
+
+function categorizeEvent(
+    event: Event,
+    weeks: Date[],
+    matrix: CalendarEventCell[][],
+    weekStartDay: 0 | 1 = 0
+) {
+    if (event.kind === "FULL_DAY_EVENT") {
+        categorizeFullDayEvent(event, weeks, matrix, weekStartDay);
+    } else if (event.kind === "DAY_EVENT") {
+        categorizeDayEvent(event, weeks, matrix, weekStartDay);
+    } else {
+        const exhaustiveCheck: never = event;
+        throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
+    }
+}
+
+function categorizeFullDayEvent(
+    event: FullDayEvent,
+    weeks: Date[],
+    matrix: CalendarEventCell[][],
+    weekStartDay: 0 | 1 = 0
+) {
+    const from = startOfDay(event.from);
+    const to = endOfDay(event.to);
+    const startWeekIndex = getWeekIndex(weeks, from, weekStartDay);
+    const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
+
+    const isOverlappingBefore = hasOverlapingWeek(endWeekIndex, startWeekIndex);
+
+    const isOverlappingAfter = hasOverlapingWeek(startWeekIndex, endWeekIndex);
+
+    if (startWeekIndex === -1 && endWeekIndex === -1) {
+        return;
+    }
+
+    for (
+        let i = Math.max(startWeekIndex, 0);
+        i <= Math.max(endWeekIndex, startWeekIndex);
+        i++
+    ) {
+        matrix[i].push({
+            event,
+            colStart: getColStart(
+                i,
+                startWeekIndex,
+                getDay(from),
+                isOverlappingAfter
+            ),
+            colEnd: getColEnd(i, endWeekIndex, getDay(to), isOverlappingBefore),
+        });
+    }
+}
+
+function categorizeDayEvent(
+    event: DayEvent,
+    weeks: Date[],
+    matrix: CalendarEventCell[][],
+    weekStartDay: 0 | 1 = 0
+) {
+    const day = startOfDay(event.date);
+    const weekIndex = getWeekIndex(weeks, day, weekStartDay);
+
+    if (weekIndex === -1) {
+        return;
+    }
+
+    const dayOfWeek = getDay(day);
+
+    matrix[weekIndex].push({
+        event,
+        colStart: dayOfWeek + 1,
+        colEnd: dayOfWeek + 2,
+    });
 }
 
 export { type CalendarEventCell as CalendarEventCell, useCalendar };

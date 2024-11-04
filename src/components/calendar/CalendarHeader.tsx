@@ -48,12 +48,12 @@ function CalendarHeader({
                 )}
             </h1>
             <div className="flex items-center gap-3">
-                {/* Todo: own component and funcinality */}
+                {/* Todo */}
                 <Button size="icon" variant="ghost">
                     <Settings className="text-zinc-950 size-[1.2rem] dark:text-zinc-200" />
                 </Button>
                 <ThemeToggle />
-                {/* Todo: own component and funcinality */}
+                {/* Todo */}
                 <Button size="icon" variant="ghost">
                     <Hash className="text-zinc-950 size-[1.2rem] dark:text-zinc-200" />
                 </Button>

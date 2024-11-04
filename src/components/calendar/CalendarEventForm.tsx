@@ -3,6 +3,7 @@ import { addHours } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { cs } from "date-fns/locale";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -88,20 +89,20 @@ function CalendarEventForm({
     }, []);
 
     useEffect(() => {
-        // if (!watchStartTime) {
-        //     return;
-        // }
-        // const [hours, minutes] = watchStartTime.split(":").map(Number);
-        // const date = new Date();
-        // date.setHours(hours, minutes, 0, 0);
-        // let newEndTime;
-        // if (hours >= 23) {
-        //     newEndTime = formatTime(new Date(date.setHours(23, 45, 0, 0)));
-        // } else {
-        //     newEndTime = formatTime(addHours(date, 1));
-        // }
-        // form.setValue("endTime", newEndTime);
-    }, [watchStartTime]);
+        if (!watchStartTime) {
+            return;
+        }
+        const startTime = parseTimeString(watchStartTime);
+
+        if (startTime.getHours() >= 23) {
+            form.setValue(
+                "endTime",
+                formatTime(new Date(startTime.setHours(23, 45, 0, 0)))
+            );
+        } else {
+            form.setValue("endTime", formatTime(addHours(startTime, 1)));
+        }
+    }, [watchStartTime, form]);
 
     useEffect(() => {
         onWatch?.(form.getValues());
@@ -139,7 +140,7 @@ function CalendarEventForm({
                         <FormItem>
                             <FormControl>
                                 <Input
-                                    placeholder="Add Event"
+                                    placeholder="Název události"
                                     {...field}
                                     ref={titleInputRef}
                                 />
@@ -195,6 +196,7 @@ function CalendarEventForm({
                                                 selected={field.value}
                                                 onSelect={field.onChange}
                                                 weekStartsOn={weekStartDay}
+                                                locale={cs}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -218,6 +220,9 @@ function CalendarEventForm({
                                                     variant="outline"
                                                     className="font-normal"
                                                 >
+                                                    <span className="sr-only">
+                                                        vybrete datum
+                                                    </span>
                                                     {formatLongDate(
                                                         field.value.from
                                                     )}{" "}
@@ -235,6 +240,7 @@ function CalendarEventForm({
                                                 onSelect={field.onChange}
                                                 weekStartsOn={weekStartDay}
                                                 numberOfMonths={2}
+                                                locale={cs}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -261,6 +267,9 @@ function CalendarEventForm({
                                                     variant="outline"
                                                     className="font-normal"
                                                 >
+                                                    <span className="sr-only">
+                                                        Vyberte počáteční čas
+                                                    </span>
                                                     {field.value}
                                                 </Button>
                                             </SelectPrimitive.Trigger>
@@ -300,6 +309,9 @@ function CalendarEventForm({
                                                     variant="outline"
                                                     className="font-normal"
                                                 >
+                                                    <span className="sr-only">
+                                                        Vyberte konečný čas
+                                                    </span>
                                                     {field.value}
                                                 </Button>
                                             </SelectPrimitive.Trigger>
@@ -332,7 +344,7 @@ function CalendarEventForm({
                         <FormItem>
                             <FormControl>
                                 <Textarea
-                                    placeholder="Description"
+                                    placeholder="Popis události"
                                     className="max-h-52 h-16"
                                     {...field}
                                 />
@@ -366,7 +378,7 @@ function CalendarEventForm({
                                                 circleColor={color}
                                             >
                                                 <span className="sr-only">
-                                                    {color} label
+                                                    {color} barva události
                                                 </span>
                                             </Label>
                                         </div>

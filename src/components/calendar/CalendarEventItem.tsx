@@ -18,7 +18,7 @@ import {
 } from "@/providers/EventsProvider";
 import { CalendarUpdateEvent } from "./CalendarUpdateEvent";
 import { Button } from "@/components/ui/button";
-import { formatLongDate, formatTime, cn, truncateString } from "@/lib";
+import { formatLongDate, formatTime, cn } from "@/lib";
 import { useEvents } from "@/hooks/useEvents";
 
 type CalendarEventItemProps = {
@@ -56,7 +56,7 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     } else if (event.kind === "DAY_EVENT") {
         const { date, startTime, endTime } = event;
 
-        time = `${formatLongDate(date)} at ${formatTime(
+        time = `${formatLongDate(date)} ⋅ ${formatTime(
             startTime
         )} - ${formatTime(endTime)}`;
 
@@ -69,9 +69,9 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     function handleRemoveEvent() {
         const revertRemoval = removeEvent(event.id);
 
-        toast(`Event "${truncateString(title, 12)}" has been removed`, {
+        toast(`Událost byla odstraněna`, {
             action: {
-                label: "Undo",
+                label: "Vrátit akci",
                 onClick: () => revertRemoval(event),
             },
         });
@@ -229,7 +229,7 @@ function EventItemPreview({
         <div>
             <div className="grid grid-cols-[min-content,auto] items-baseline gap-3">
                 <span
-                    className={`inline-block size-3.5 rounded bg-${color}-600 translate-y-[1.5px]`}
+                    className={`inline-block size-3.5 rounded bg-${color}-600 translate-y-px`}
                 ></span>
                 <p className="text-lg font-semibold line-clamp-2">{title}</p>
             </div>

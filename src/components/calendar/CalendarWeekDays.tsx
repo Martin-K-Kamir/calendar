@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { addDays, startOfWeek } from "date-fns";
-import { formatDate, capitalize } from "@/lib";
+import { formatDate } from "@/lib";
 import { useSettings } from "@/hooks/useSettings";
 
 type CalendarWeekDayProps = {
@@ -13,7 +13,7 @@ function CalendarWeekDay({ date }: CalendarWeekDayProps) {
             className="text-center text-xs font-semibold pt-1.5 px-1.5  text-zinc-500 dark:text-zinc-400"
             aria-label={formatDate(date, { weekday: "long" })}
         >
-            {capitalize(formatDate(date, { weekday: "short" }))}
+            {formatDate(date, { weekday: "short" })}
         </div>
     );
 }

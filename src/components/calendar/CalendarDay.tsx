@@ -24,7 +24,7 @@ function CalendarDay({ day }: CalendarDayProps) {
         if (!isPopoverOpen) {
             removeDraftEvent();
         }
-    }, [isPopoverOpen]);
+    }, [isPopoverOpen, removeDraftEvent]);
 
     return (
         <Popover
@@ -53,7 +53,7 @@ function CalendarDay({ day }: CalendarDayProps) {
                 align="start"
                 alignOffset={10}
                 sideOffset={8}
-                className="w-[22rem]"
+                className="min-w-[22rem] w-auto"
             >
                 <PopoverClose asChild>
                     <Button

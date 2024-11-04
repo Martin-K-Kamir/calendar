@@ -1,3 +1,1 @@
-import { ThemeToggle } from "./ThemeToggle";
-
-export { ThemeToggle };
+export { ThemeToggle } from "./ThemeToggle";

@@ -1,1 +1,0 @@
-export { truncateString } from "./truncateString";

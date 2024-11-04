@@ -21,7 +21,7 @@ export function generateTimeSlotsFrom(from: Date) {
         const minutes = extraMinutes % 60;
         const roundedMinutes = Math.round(minutes / 15) * 15;
 
-        let duration =
+        const duration =
             hours > 0
                 ? `${numberFormatter.format(hours)}h${
                       roundedMinutes > 0

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useCallback } from "react";
 import { UnionOmit } from "@/types";
 
-const EVENT_COLORS = [
+export const EVENT_COLORS = [
     "pink",
     "indigo",
     "green",
@@ -10,33 +10,33 @@ const EVENT_COLORS = [
     "zinc",
 ] as const;
 
-type EventBase = {
+export type EventBase = {
     id: `${string}-${string}-${string}-${string}-${string}`;
     title: string;
     description: string;
     color: (typeof EVENT_COLORS)[number];
 };
 
-type FullDayEvent = EventBase & {
+export type FullDayEvent = EventBase & {
     kind: "FULL_DAY_EVENT";
     from: Date;
     to: Date;
 };
 
-type DayEvent = EventBase & {
+export type DayEvent = EventBase & {
     kind: "DAY_EVENT";
     startTime: Date;
     endTime: Date;
     date: Date;
 };
 
-type Event = FullDayEvent | DayEvent;
+export type Event = FullDayEvent | DayEvent;
 
-type EventsProviderProps = {
+export type EventsProviderProps = {
     children: React.ReactNode;
 };
 
-type EventsContext = {
+export type EventsContext = {
     events: Event[];
     draftEvent: Event | null;
     addEvent: (event: UnionOmit<Event, "id">) => Event["id"];
@@ -46,9 +46,9 @@ type EventsContext = {
     updateEvent: (updatedEvent: Event) => void;
 };
 
-const EventsProviderContext = createContext<EventsContext | null>(null);
+export const EventsProviderContext = createContext<EventsContext | null>(null);
 
-function EventsProvider({ children }: EventsProviderProps) {
+export function EventsProvider({ children }: EventsProviderProps) {
     const [events, setEvents] = useState<Event[]>(loadEventsFromLocalStorage);
     const [draftEvent, setDraftEvent] = useState<Event | null>(null);
 
@@ -132,12 +132,3 @@ function loadEventsFromLocalStorage() {
 function saveEventsToLocalStorage(events: Event[]) {
     localStorage.setItem("EVENTS", JSON.stringify(events));
 }
-
-export {
-    type Event,
-    type DayEvent,
-    type FullDayEvent,
-    EventsProvider,
-    EventsProviderContext,
-    EVENT_COLORS,
-};

@@ -7,7 +7,7 @@ import { groupChildrenByColumn } from "@/lib";
 type CalendarEventsListProps = {
     events: CalendarEventCell[];
     daysOfWeek: Date[];
-    draftEvent: any;
+    draftEvent: CalendarEventCell | undefined | null;
 };
 
 type OverflowEvent = {

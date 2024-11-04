@@ -30,7 +30,7 @@ function CalendarOverflowEvents({
         <Popover>
             <PopoverTrigger asChild>
                 <button className="block w-full pointer-events-auto px-2 py-[3px] rounded-md text-xs font-semibold text-left bg-white text-zinc-900 hover:bg-zinc-100 dark:text-white dark:bg-zinc-950 dark:hover:bg-zinc-800">
-                    {amount} more
+                    {amount} další
                 </button>
             </PopoverTrigger>
             <PopoverContent className="w-64 h-auto" align="center" side="top">

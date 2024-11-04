@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 
+// Todo: Implement settings
+
 type SettingsProviderProps = {
     children: React.ReactNode;
 };
