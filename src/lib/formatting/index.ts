@@ -1,5 +1,4 @@
-export { capitalize } from "./capitalize";
-export { formatDate } from "./formatDate";
-export { formatLongDate } from "./formatLongDate";
-export { formatTime } from "./formatTime";
-export { formatFullDate } from "./formatFullDate";
+export * from "./format-date";
+export * from "./format-long-date";
+export * from "./format-time";
+export * from "./format-full-date";

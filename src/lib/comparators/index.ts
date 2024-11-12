@@ -1,2 +1,4 @@
-export { compareDayEvents } from "./compareDayEvents";
-export { compareFullDayEvents } from "./compareFullDayEvents";
+export * from "./compare-by-color";
+export * from "./compare-by-date/compare-by-date";
+export * from "./compare-by-date-range";
+export * from "./compare-by-string/compare-by-string";

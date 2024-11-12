@@ -1,8 +1,8 @@
-import { useCalendar } from "@/hooks/useCalendar";
-import { CalendarHeader } from "./CalendarHeader";
-import { CalendarDay } from "./CalendarDay";
-import { CalendarWeekDays } from "./CalendarWeekDays";
-import { CalendarEventsList } from "./CalendarEventsList";
+import { useCalendar } from "./hooks";
+import { CalendarHeader } from "./calendar-header";
+import { CalendarDay } from "./calendar-day";
+import { CalendarWeekDays } from "./calendar-week-days";
+import { CalendarEventsList } from "./calendar-events-list";
 
 function Calendar() {
     const {
