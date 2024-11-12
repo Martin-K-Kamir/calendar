@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import {
     describe,
     it,
@@ -8,11 +9,20 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { CalendarEventCell } from "@/components/calendar/hooks/use-calendar";
 import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testConstants";
+import { type CalendarEventCell } from "@/features/calendar/hooks/use-calendar";
 import { useEvents } from "@/hooks/use-events";
-import { CalendarEventsList } from "./calendar-events-list";
+import * as lib from "@/lib";
+import { YEAR, MONTH } from "@/testConstants";
+import { CalendarOverflowEvents } from "./calendar-overflow-events";
+
+vi.mock("@/lib", async () => {
+    const originalModule = await vi.importActual<typeof lib>("@/lib");
+    return {
+        ...originalModule,
+        formatLongDate: vi.fn(),
+    };
+});
 
 vi.mock("@/hooks/use-events", () => ({
     useEvents: vi.fn(),
@@ -77,27 +87,15 @@ const mockEvents: CalendarEventCell[] = [
     },
 ];
 
-const mockDaysOfWeek = Array.from(
-    { length: 7 },
-    (_, i) => new Date(YEAR, MONTH, i + 4)
-);
-
-const mockDraftEvent: CalendarEventCell = {
-    event: {
-        kind: DAY_EVENT,
-        id: crypto.randomUUID(),
-        title: "Test Draft Event",
-        date: new Date(YEAR, MONTH, 4), // 4th Nov 2024
-        startTime: new Date(YEAR, MONTH, 4, 13, 0), // 13:00
-        endTime: new Date(YEAR, MONTH, 4, 14, 0), // 14:00
-        description: "Test Description",
-        color: EVENT_COLORS[0],
-    },
+const mockData = {
+    amount: 3,
     colStart: 1,
     colEnd: 2,
+    daysOfWeek: [new Date(YEAR, MONTH, 4)],
+    events: mockEvents,
 };
 
-describe("CalendarEventsList Component", () => {
+describe("CalendarOverflowEvents Component", () => {
     beforeEach(() => {
         (useEvents as Mock).mockReturnValue({
             addDraftEvent: vi.fn(),
@@ -105,65 +103,58 @@ describe("CalendarEventsList Component", () => {
             updateEvent: vi.fn(),
             removeEvent: vi.fn(),
         });
+
+        (lib.formatLongDate as Mock).mockImplementation(date => {
+            return date.toLocaleDateString("en-US", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+        });
     });
 
     afterAll(() => {
         vi.restoreAllMocks();
     });
 
-    it("renders events correctly", () => {
-        render(
-            <CalendarEventsList
-                events={mockEvents}
-                daysOfWeek={mockDaysOfWeek}
-                draftEvent={null}
-            />
-        );
+    it("renders the button with the correct amount", () => {
+        render(<CalendarOverflowEvents {...mockData} />);
+        expect(
+            screen.getByText(new RegExp(`${mockData.amount}`))
+        ).toBeDefined();
+    });
 
-        mockEvents.forEach(event => {
+    it("opens and closes the popover", () => {
+        render(<CalendarOverflowEvents {...mockData} />);
+
+        fireEvent.click(screen.getByTestId("popoverTrigger"));
+        expect(screen.getByTestId("popoverContent")).toBeDefined();
+
+        fireEvent.click(screen.getByTestId("closePopoverButton"));
+        expect(screen.queryByTestId("popoverContent")).toBeNull();
+    });
+
+    it("renders events inside the popover", async () => {
+        render(<CalendarOverflowEvents {...mockData} />);
+
+        await userEvent.click(screen.getByTestId("popoverTrigger"));
+        expect(screen.getByTestId("popoverContent")).toBeDefined();
+
+        mockData.events.forEach(event => {
             expect(screen.getByText(event.event.title)).toBeDefined();
         });
     });
 
-    it("renders draft event correctly", () => {
-        render(
-            <CalendarEventsList
-                events={mockEvents}
-                daysOfWeek={mockDaysOfWeek}
-                draftEvent={mockDraftEvent}
-            />
+    it("displays the correct day name in the popover header", async () => {
+        render(<CalendarOverflowEvents {...mockData} />);
+
+        fireEvent.click(screen.getByTestId("popoverTrigger"));
+        expect(screen.getByTestId("popoverContent")).toBeDefined();
+
+        const dayName = lib.formatLongDate(
+            mockData.daysOfWeek[mockData.colStart - 1]
         );
-
-        expect(screen.getByText("Test Draft Event")).toBeDefined();
-    });
-
-    it("handles overflow events correctly", () => {
-        const observe = vi.fn();
-        const disconnect = vi.fn();
-        const unobserve = vi.fn();
-
-        window.ResizeObserver = vi.fn(() => ({
-            observe,
-            disconnect,
-            unobserve,
-        }));
-
-        render(
-            <CalendarEventsList
-                events={mockEvents}
-                daysOfWeek={mockDaysOfWeek}
-                draftEvent={null}
-            />
-        );
-
-        const containerElement =
-            screen.getByText("Test Event 1").parentElement?.parentElement;
-        if (containerElement) {
-            const resizeObserverCallback = (window.ResizeObserver as any).mock
-                .calls[0][0];
-            resizeObserverCallback([{ target: containerElement }]);
-        }
-
-        expect(observe).toHaveBeenCalled();
+        expect(screen.getByText(dayName)).toBeDefined();
     });
 });

@@ -1,5 +1,4 @@
 import { X as XIcon } from "lucide-react";
-import { CalendarEventItem } from "../calendar-event-item";
 import {
     Popover,
     PopoverContent,
@@ -9,7 +8,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatLongDate } from "@/lib";
 import { Button } from "@/components/ui/button";
-import { type CalendarEventCell } from "@/components/calendar/hooks/use-calendar";
+import { CalendarEventItem } from "../calendar-event-item";
+import { type CalendarEventCell } from "../hooks";
 
 export type CalendarOverflowEventsProps = {
     amount: number;

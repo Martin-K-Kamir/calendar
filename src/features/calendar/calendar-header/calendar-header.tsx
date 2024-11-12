@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, Settings, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme";
+import { ThemeToggle } from "@/features/theme";
 import { capitalize, formatDate } from "@/lib";
 
 type CalendarHeaderProps = {

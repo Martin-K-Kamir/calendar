@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect } from "react";
-import { type CalendarEventCell } from "@/components/calendar/hooks/use-calendar";
+import { type CalendarEventCell } from "@/features/calendar/hooks/use-calendar";
 import { CalendarEventItem } from "../calendar-event-item";
 import { CalendarOverflowEvents } from "../calendar-overflow-events";
 import { groupChildrenByColumn } from "../utils";

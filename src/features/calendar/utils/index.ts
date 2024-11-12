@@ -1,4 +1,4 @@
-export * from "./generate-time-slots";
+export * from "./compare-day-events";
 export * from "./generate-time-slots-from";
 export * from "./get-col-start";
 export * from "./get-col-end";
@@ -6,4 +6,5 @@ export * from "./group-children-by-column";
 export * from "./compare-day-events";
 export * from "./compare-full-day-events";
 export * from "./parse-time-string";
-export * from "./round-to-nearest-15-minutes/round-to-nearest-15-minutes";
+export * from "./round-to-nearest-15-minutes";
+export * from "./generate-time-slots";

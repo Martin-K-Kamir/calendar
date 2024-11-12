@@ -29,8 +29,8 @@ import { Label } from "@/components/ui/label";
 import { EVENT_COLORS } from "@/providers/events-provider";
 import { useSettings } from "@/hooks/use-settings";
 import {
-    generateTimeSlots,
     parseTimeString,
+    generateTimeSlots,
     generateTimeSlotsFrom,
 } from "../utils";
 import { formatLongDate, formatTime, areValuesDefined } from "@/lib";

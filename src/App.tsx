@@ -1,8 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme";
 import { EventsProvider } from "@/providers/events-provider";
 import { SettingsProvider } from "@/providers/settings-provider";
-import { Calendar } from "@/components/calendar";
+import { ThemeProvider } from "@/features/theme";
+import { Calendar } from "@/features/calendar";
 
 export default function App() {
     return (

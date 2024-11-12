@@ -16,10 +16,10 @@ import {
     type DayEvent,
     type FullDayEvent,
 } from "@/providers/events-provider";
-import { CalendarUpdateEventForm } from "../calendar-update-event-form";
 import { Button } from "@/components/ui/button";
 import { formatLongDate, formatTime, cn } from "@/lib";
 import { useEvents } from "@/hooks/use-events";
+import { CalendarUpdateEventForm } from "../calendar-update-event-form";
 
 type CalendarEventItemProps = {
     className?: string;
