@@ -75,7 +75,6 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
     }
 
     function handleSubmit(values: z.infer<typeof eventFormSchema>) {
-        console.log("values", values);
         const {
             title,
             color,

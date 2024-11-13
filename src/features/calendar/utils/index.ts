@@ -9,3 +9,4 @@ export * from "./compare-full-day-events";
 export * from "./parse-time-string";
 export * from "./round-to-nearest-15-minutes";
 export * from "./generate-time-slots";
+export * from "./calculate-remaining-height";

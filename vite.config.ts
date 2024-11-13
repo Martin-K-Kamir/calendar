@@ -26,7 +26,7 @@ export default defineConfig({
                 "src/**/index.{ts,tsx}",
                 "src/components/ui/**/*.{ts,tsx}",
                 "src/types.ts",
-                "src/testConstants.ts",
+                "src/testing/**/*.{ts,tsx}",
             ],
         },
     },

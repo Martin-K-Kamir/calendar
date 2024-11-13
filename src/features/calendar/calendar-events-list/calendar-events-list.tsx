@@ -4,7 +4,10 @@ import {
     CalendarEventItem,
     type CalendarEventCell,
 } from "@/features/calendar";
-import { groupChildrenByColumn } from "@/features/calendar/utils";
+import {
+    groupChildrenByColumn,
+    calculateRemainingHeight,
+} from "@/features/calendar/utils";
 
 type CalendarEventsListProps = {
     events: CalendarEventCell[];
@@ -41,7 +44,11 @@ function CalendarEventsList({
             }
             setOverflowEvents({});
 
-            const children = getEventsChildren(containerElement);
+            const children = Array.from(
+                containerElement.querySelectorAll<HTMLElement>(
+                    "[data-event-item]"
+                )
+            );
             const draftEventElement =
                 containerElement.querySelector<HTMLDivElement>(
                     "[data-draft-event-item]"
@@ -51,7 +58,9 @@ function CalendarEventsList({
                 return;
             }
 
-            resetChildrenDisplay(children);
+            children.forEach(child => {
+                child.style.removeProperty("display");
+            });
 
             const remainingHeight = calculateRemainingHeight(
                 containerElement,
@@ -155,34 +164,3 @@ function CalendarEventsList({
 }
 
 export { CalendarEventsList };
-
-function getEventsChildren(containerElement: Element): HTMLElement[] {
-    return Array.from(
-        containerElement.querySelectorAll<HTMLElement>("[data-event-item]")
-    );
-}
-
-function resetChildrenDisplay(children: HTMLElement[]): void {
-    children.forEach(child => {
-        child.style.removeProperty("display");
-    });
-}
-
-function calculateRemainingHeight(
-    containerElement: Element,
-    threshold = 0
-): number {
-    const c = getComputedStyle(containerElement);
-
-    const computedStyleSum = [
-        c.paddingBlockStart,
-        c.paddingBlockEnd,
-        c.borderBlockStartWidth,
-        c.borderBlockEndWidth,
-        c.rowGap,
-    ].reduce((acc, cur) => {
-        return acc + parseInt(cur);
-    }, 0);
-
-    return containerElement.clientHeight - computedStyleSum - threshold;
-}

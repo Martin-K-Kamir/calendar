@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+// import userEvent from "@testing-library/user-event";
 import { z } from "zod";
 import {
     vi,
@@ -136,6 +136,35 @@ describe("CalendarEventForm Component", () => {
             )} - ${lib.formatLongDate(defaultFormValues.dateRange!.to)}`
         );
         expect(re.test(dateRangeButtonText!)).toBe(true);
+    });
+
+    it("sets endTime to 11:45 PM if startTime is 11:00 PM or later", () => {
+        const originalDateTimeFormat = Intl.DateTimeFormat;
+
+        Intl.DateTimeFormat = vi.fn((_, options) => {
+            return new originalDateTimeFormat("en-US", options);
+        }) as unknown as typeof Intl.DateTimeFormat;
+
+        Intl.DateTimeFormat.supportedLocalesOf =
+            originalDateTimeFormat.supportedLocalesOf;
+
+        render(
+            <CalendarEventForm
+                defaultFormValues={{
+                    ...defaultFormValues,
+                    startTime: "11:00 PM",
+                }}
+                onSubmit={vi.fn()}
+            />
+        );
+
+        fireEvent.click(screen.getByTestId("startTimeButton"));
+        fireEvent.click(screen.getByTestId("startTimeOption-11:00 PM"));
+
+        const endTimeText = screen.getByTestId("endTimeButton").textContent!;
+        expect(/11:45 PM/.test(endTimeText)).toBe(true);
+
+        Intl.DateTimeFormat = originalDateTimeFormat;
     });
 
     // TODO: Fix this test. When the test is running, zod internal utility function throws an error of undefined property.

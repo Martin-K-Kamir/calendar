@@ -282,6 +282,7 @@ function CalendarEventForm({
                                                 <SelectItem
                                                     key={timeSlot}
                                                     value={timeSlot}
+                                                    data-testid={`startTimeOption-${timeSlot}`}
                                                 >
                                                     {timeSlot}
                                                 </SelectItem>
