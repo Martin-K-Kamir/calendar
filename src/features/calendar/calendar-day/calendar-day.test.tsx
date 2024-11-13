@@ -9,9 +9,9 @@ import {
     type Mock,
 } from "vitest";
 import { useEvents } from "@/hooks/use-events";
-import { YEAR, MONTH } from "@/testConstants";
-import { CalendarDay } from "./calendar-day";
+import { YEAR, MONTH } from "@/testing/constants";
 import * as lib from "@/lib";
+import { CalendarDay } from "@/features/calendar";
 
 vi.mock("@/lib", async () => {
     const originalModule = await vi.importActual<typeof lib>("@/lib");

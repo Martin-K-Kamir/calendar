@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getColEnd } from "./get-col-end";
+import { getColEnd } from "@/features/calendar/utils";
 
 describe("getColEnd()", () => {
     it("should return 8 if isOverlapping is true", () => {

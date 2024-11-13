@@ -16,8 +16,8 @@ import {
     FULL_DAY_EVENT,
     type Event,
 } from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testConstants";
-import { CalendarEventItem } from "./calendar-event-item";
+import { YEAR, MONTH } from "@/testing/constants";
+import { CalendarEventItem } from "@/features/calendar";
 
 vi.mock("@/hooks/use-events");
 vi.mock("sonner");

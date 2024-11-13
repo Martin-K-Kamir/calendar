@@ -11,9 +11,9 @@ import {
     type Mock,
 } from "vitest";
 import { useSettings } from "@/hooks/use-settings";
-import { YEAR, MONTH } from "@/testConstants";
+import { YEAR, MONTH } from "@/testing/constants";
 import * as lib from "@/lib";
-import { CalendarEventForm, eventFormSchema } from "./calendar-event-form";
+import { CalendarEventForm, eventFormSchema } from "@/features/calendar";
 
 vi.mock("@/hooks/use-settings", () => ({
     useSettings: vi.fn(),

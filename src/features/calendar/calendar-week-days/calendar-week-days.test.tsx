@@ -3,7 +3,7 @@ import { addDays, startOfWeek } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
 import { formatDate } from "@/lib";
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { CalendarWeekDays } from "./calendar-week-days";
+import { CalendarWeekDays } from "@/features/calendar";
 
 vi.mock("@/hooks/use-settings");
 vi.mock("@/lib");

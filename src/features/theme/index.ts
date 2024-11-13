@@ -1,3 +1,7 @@
-export * from "./theme-toggle";
-export * from "./hooks";
-export * from "./context";
+export { ThemeToggle } from "./theme-toggle";
+export { useTheme } from "./hooks";
+export {
+    ThemeProvider,
+    ThemeProviderContext,
+    type ThemeProviderState,
+} from "./context";

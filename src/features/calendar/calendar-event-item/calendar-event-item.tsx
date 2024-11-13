@@ -17,9 +17,9 @@ import {
     type FullDayEvent,
 } from "@/providers/events-provider";
 import { Button } from "@/components/ui/button";
-import { formatLongDate, formatTime, cn } from "@/lib";
 import { useEvents } from "@/hooks/use-events";
-import { CalendarUpdateEventForm } from "../calendar-update-event-form";
+import { formatLongDate, formatTime, cn } from "@/lib";
+import { CalendarUpdateEventForm } from "@/features/calendar";
 
 type CalendarEventItemProps = {
     className?: string;

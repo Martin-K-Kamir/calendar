@@ -1,4 +1,4 @@
-import { formatDate } from "../format-date";
+import { formatDate } from "@/lib";
 
 export function formatLongDate(date: Date) {
     return formatDate(date, {

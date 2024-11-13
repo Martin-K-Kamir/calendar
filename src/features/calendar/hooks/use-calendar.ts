@@ -20,7 +20,7 @@ import {
     getColEnd,
     compareFullDayEvents,
     compareDayEvents,
-} from "../utils";
+} from "@/features/calendar/utils";
 import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
 import { WeekStartsOn } from "@/types";
 

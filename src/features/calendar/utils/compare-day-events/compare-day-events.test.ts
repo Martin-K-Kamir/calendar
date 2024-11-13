@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { DayEvent } from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testConstants";
-import { compareDayEvents } from "./compare-day-events";
+import { YEAR, MONTH } from "@/testing/constants";
+import { compareDayEvents } from "@/features/calendar/utils";
 
 const event1 = {
     startTime: new Date(YEAR, MONTH, 1, 10, 0),

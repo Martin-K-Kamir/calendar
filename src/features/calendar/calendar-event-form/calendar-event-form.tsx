@@ -28,12 +28,12 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { EVENT_COLORS } from "@/providers/events-provider";
 import { useSettings } from "@/hooks/use-settings";
+import { formatLongDate, formatTime, areValuesDefined } from "@/lib";
 import {
     parseTimeString,
     generateTimeSlots,
     generateTimeSlotsFrom,
-} from "../utils";
-import { formatLongDate, formatTime, areValuesDefined } from "@/lib";
+} from "@/features/calendar/utils";
 
 const eventFormSchema = z.object({
     title: z.string().min(1).max(80),

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupChildrenByColumn } from "./group-children-by-column";
+import { groupChildrenByColumn } from "@/features/calendar/utils";
 
 describe("groupChildrenByColumn()", () => {
     it("should group children by their column range", () => {

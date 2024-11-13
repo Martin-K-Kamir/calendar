@@ -8,11 +8,13 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { CalendarEventCell } from "@/features/calendar/hooks/use-calendar";
 import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testConstants";
+import { YEAR, MONTH } from "@/testing/constants";
 import { useEvents } from "@/hooks/use-events";
-import { CalendarEventsList } from "./calendar-events-list";
+import {
+    CalendarEventsList,
+    type CalendarEventCell,
+} from "@/features/calendar";
 
 vi.mock("@/hooks/use-events", () => ({
     useEvents: vi.fn(),

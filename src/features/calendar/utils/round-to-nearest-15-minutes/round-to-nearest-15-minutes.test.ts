@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { YEAR } from "@/testConstants";
-import { roundToNearest15Minutes } from "./round-to-nearest-15-minutes";
+import { YEAR } from "@/testing/constants";
+import { roundToNearest15Minutes } from "@/features/calendar/utils";
 
 describe("roundToNearest15Minutes()", () => {
     it("should round up to the nearest 15 minutes", () => {

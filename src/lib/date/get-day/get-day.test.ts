@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { YEAR } from "@/testConstants";
-import { getDay } from "./get-day";
+import { YEAR } from "@/testing/constants";
+import { getDay } from "@/lib";
 
 describe("getDay()", () => {
     it("should return the correct day when week starts on Monday", () => {

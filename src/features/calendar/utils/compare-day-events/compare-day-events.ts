@@ -1,5 +1,6 @@
 import { DayEvent } from "@/providers/events-provider";
-import { compareByDate, compareByString, compareByColor } from "@/lib";
+import { compareByColor } from "@/features/calendar/utils";
+import { compareByDate, compareByString } from "@/lib";
 
 export function compareDayEvents(a: DayEvent, b: DayEvent) {
     const startTimeComparison = compareByDate(a.startTime, b.startTime);

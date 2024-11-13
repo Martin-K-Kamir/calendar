@@ -17,7 +17,7 @@ import {
     DAY_EVENT,
     FULL_DAY_EVENT,
 } from "@/providers/events-provider";
-import { CalendarUpdateEventForm } from "./calendar-update-event-form";
+import { CalendarUpdateEventForm } from "@/features/calendar";
 
 vi.mock("@/hooks/use-events");
 vi.mock("sonner");

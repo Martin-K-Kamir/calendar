@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { formatFullDate } from "./format-full-date";
-import { formatDate } from "../format-date";
+import { formatDate, formatFullDate } from "@/lib";
 
-vi.mock("../format-date");
+vi.mock("@/lib/formatting/format-date");
 
 describe("formatFullDate()", () => {
     it("should format the date correctly", () => {

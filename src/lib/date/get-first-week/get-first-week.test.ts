@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { YEAR } from "@/testConstants";
-import { getFirstWeek } from "./get-first-week";
+import { YEAR } from "@/testing/constants";
+import { getFirstWeek } from "@/lib";
 
 describe("getFirstWeek()", () => {
     it("should return the first week starting on Sunday", () => {

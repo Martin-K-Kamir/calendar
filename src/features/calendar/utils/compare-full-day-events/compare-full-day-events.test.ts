@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { FullDayEvent } from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testConstants";
-import { compareFullDayEvents } from "./compare-full-day-events";
+import { YEAR, MONTH } from "@/testing/constants";
+import { compareFullDayEvents } from "@/features/calendar/utils";
 
 describe("compareFullDayEvents()", () => {
     const event1 = {

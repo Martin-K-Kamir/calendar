@@ -9,10 +9,9 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { useTheme } from "./hooks";
-import { ThemeToggle } from "./theme-toggle";
+import { ThemeToggle, useTheme } from "@/features/theme";
 
-vi.mock("./hooks");
+vi.mock("@/features/theme/hooks/use-theme");
 
 describe("ThemeToggle Component", () => {
     const setTheme = vi.fn();

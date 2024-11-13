@@ -16,7 +16,7 @@ import {
     DAY_EVENT,
     FULL_DAY_EVENT,
 } from "@/providers/events-provider";
-import { CalendarAddEventForm } from "./calendar-add-event-form";
+import { CalendarAddEventForm } from "@/features/calendar";
 
 vi.mock("@/hooks/use-events", () => ({
     useEvents: vi.fn(),

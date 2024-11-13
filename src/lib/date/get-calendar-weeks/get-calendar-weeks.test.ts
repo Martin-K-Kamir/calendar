@@ -1,19 +1,17 @@
 import { eachWeekOfInterval } from "date-fns";
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { YEAR } from "@/testConstants";
-import { getCalendarWeeks } from "./get-calendar-weeks";
-import { getFirstWeek } from "../get-first-week";
-import { getLastWeek } from "../get-last-week";
+import { YEAR } from "@/testing/constants";
+import { getCalendarWeeks, getLastWeek, getFirstWeek } from "@/lib";
 
-vi.mock("../get-first-week");
-vi.mock("../get-last-week");
 vi.mock("date-fns", () => ({
     eachWeekOfInterval: vi.fn(),
 }));
+vi.mock("@/lib/date/get-first-week");
+vi.mock("@/lib/date/get-last-week");
 
 describe("getCalendarWeeks()", () => {
     it("should call getFirstWeek and getLastWeek with the correct arguments", () => {
-        const selectedMonth = new Date(2023, 9, 1);
+        const selectedMonth = new Date(YEAR, 9, 1);
         const weekStartsOn = 0;
 
         (getFirstWeek as Mock).mockReturnValue(new Date(YEAR, 8, 25));

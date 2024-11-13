@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { getMonthNames } from "./get-month-names";
+import { getMonthNames } from "@/lib";
 
 describe("getMonthNames()", () => {
     it("should return month names in default locale", () => {

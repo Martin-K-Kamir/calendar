@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { areValuesDefined } from "./are-values-defined";
+import { areValuesDefined } from "@/lib";
 
 describe("areValuesDefined()", () => {
     it("should return false if values is null", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { YEAR } from "@/testConstants";
-import { getWeekIndex } from "./get-week-index";
+import { YEAR } from "@/testing/constants";
+import { getWeekIndex } from "@/lib";
 
 describe("getWeekIndex()", () => {
     it("should return the correct index when the date is in the same week", () => {

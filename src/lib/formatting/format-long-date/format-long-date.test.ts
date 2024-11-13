@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { formatLongDate } from "./format-long-date";
-import { formatDate } from "../format-date";
+import { formatDate, formatLongDate } from "@/lib";
 
-vi.mock("../format-date");
+vi.mock("@/lib/formatting/format-date");
 
 describe("formatLongDate()", () => {
     it("should format the date with long weekday, 2-digit day, and long month", () => {

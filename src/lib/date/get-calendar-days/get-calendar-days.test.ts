@@ -1,14 +1,12 @@
-import { describe, it, expect, vi, type Mock } from "vitest";
-import { getCalendarDays } from "./get-calendar-days";
-import { getFirstWeek } from "../get-first-week";
-import { getLastWeek } from "../get-last-week";
 import { eachDayOfInterval } from "date-fns";
+import { describe, it, expect, vi, type Mock } from "vitest";
+import { getCalendarDays, getLastWeek, getFirstWeek } from "@/lib";
 
-vi.mock("../get-first-week");
-vi.mock("../get-last-week");
 vi.mock("date-fns", () => ({
     eachDayOfInterval: vi.fn(),
 }));
+vi.mock("@/lib/date/get-first-week");
+vi.mock("@/lib/date/get-last-week");
 
 describe("getCalendarDays()", () => {
     it("should return the correct days for a given month when week starts on Sunday", () => {

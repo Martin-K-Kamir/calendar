@@ -1,7 +1,6 @@
 import { eachWeekOfInterval } from "date-fns";
 import { WeekStartsOn } from "@/types";
-import { getFirstWeek } from "../get-first-week";
-import { getLastWeek } from "../get-last-week";
+import { getFirstWeek, getLastWeek } from "@/lib";
 
 export function getCalendarWeeks(
     selectedMonth: Date,

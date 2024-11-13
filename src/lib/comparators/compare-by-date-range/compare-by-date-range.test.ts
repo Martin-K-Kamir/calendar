@@ -1,47 +1,46 @@
 import { describe, it, expect } from "vitest";
-import { compareByDateRange } from "./compare-by-date-range";
-import { YEAR } from "@/testConstants";
+import { compareByDateRange } from "@/lib";
 
 describe("compareByDateRange()", () => {
-    it("should return 0 if both events have the same span", () => {
-        const eventA = {
-            from: new Date(YEAR, 0, 1),
-            to: new Date(YEAR, 0, 3),
+    it("should return 0 if both objects have the same range", () => {
+        const a = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-03"),
         };
 
-        const eventB = {
-            from: new Date(YEAR, 1, 1),
-            to: new Date(YEAR, 1, 3),
+        const b = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-03"),
         };
 
-        expect(compareByDateRange(eventA, eventB)).toBe(0);
+        expect(compareByDateRange(a, b)).toBe(0);
     });
 
-    it("should return a positive number if event B has a longer span than event A", () => {
-        const eventA = {
-            from: new Date(YEAR, 0, 1),
-            to: new Date(YEAR, 0, 3),
+    it("should return a positive number if object B has a longer range than object A", () => {
+        const a = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-03"),
         };
 
-        const eventB = {
-            from: new Date(YEAR, 1, 1),
-            to: new Date(YEAR, 1, 5),
+        const b = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-05"),
         };
 
-        expect(compareByDateRange(eventA, eventB)).toBeGreaterThan(0);
+        expect(compareByDateRange(a, b)).toBeGreaterThan(0);
     });
 
-    it("should return a negative number if event A has a longer span than event B", () => {
-        const eventA = {
-            from: new Date(YEAR, 0, 1),
-            to: new Date(YEAR, 0, 5),
+    it("should return a negative number if object A has a longer range than object B", () => {
+        const a = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-05"),
         };
 
-        const eventB = {
-            from: new Date(YEAR, 1, 1),
-            to: new Date(YEAR, 1, 3),
+        const b = {
+            from: new Date("2024-01-01"),
+            to: new Date("2024-01-04"),
         };
 
-        expect(compareByDateRange(eventA, eventB)).toBeLessThan(0);
+        expect(compareByDateRange(a, b)).toBeLessThan(0);
     });
 });

@@ -1,3 +1,4 @@
+export * from "./compare-by-color";
 export * from "./compare-day-events";
 export * from "./generate-time-slots-from";
 export * from "./get-col-start";

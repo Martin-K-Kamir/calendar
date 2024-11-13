@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { generateTimeSlots } from "./generate-time-slots";
+import { generateTimeSlots } from "@/features/calendar/utils";
 
 describe("generateTimeSlots()", () => {
     let spy: any;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTimeString } from "./parse-time-string";
+import { parseTimeString } from "@/features/calendar/utils";
 
 describe("parseTimeString()", () => {
     it("should parse time string without modifier correctly", () => {

@@ -3,9 +3,12 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { type Event, EVENT_COLORS } from "@/providers/events-provider";
 import { useEvents } from "@/hooks/use-events";
-import { roundToNearest15Minutes, parseTimeString } from "../utils";
 import { formatTime } from "@/lib";
-import { CalendarEventForm, eventFormSchema } from "../calendar-event-form";
+import {
+    roundToNearest15Minutes,
+    parseTimeString,
+} from "@/features/calendar/utils";
+import { CalendarEventForm, eventFormSchema } from "@/features/calendar";
 
 type CalendarUpdateEventFormProps = {
     event: Event;

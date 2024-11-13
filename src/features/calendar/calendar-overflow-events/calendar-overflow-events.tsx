@@ -6,10 +6,9 @@ import {
     PopoverClose,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatLongDate } from "@/lib";
 import { Button } from "@/components/ui/button";
-import { CalendarEventItem } from "../calendar-event-item";
-import { type CalendarEventCell } from "../hooks";
+import { formatLongDate } from "@/lib";
+import { CalendarEventItem, type CalendarEventCell } from "@/features/calendar";
 
 export type CalendarOverflowEventsProps = {
     amount: number;

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { ThemeProvider, ThemeProviderContext } from "./theme-provider";
+import { ThemeProvider, ThemeProviderContext } from "@/features/theme";
 
 describe("ThemeProvider", () => {
     const TestComponent = () => {

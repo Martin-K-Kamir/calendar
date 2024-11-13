@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { compareByColor } from "./compare-by-color";
 import { EVENT_COLORS } from "@/providers/events-provider";
+import { compareByColor } from "@/features/calendar/utils";
 
 describe("compareByColor()", () => {
     it("should return 0 when colors are the same", () => {

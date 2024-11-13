@@ -9,8 +9,8 @@ import {
     type Mock,
 } from "vitest";
 import * as lib from "@/lib";
-import { YEAR, MONTH } from "@/testConstants";
-import { CalendarHeader } from "./calendar-header";
+import { YEAR, MONTH } from "@/testing/constants";
+import { CalendarHeader } from "@/features/calendar";
 
 vi.mock("@/lib", async () => {
     const originalModule = await vi.importActual<typeof lib>("@/lib");

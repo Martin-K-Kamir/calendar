@@ -17,7 +17,7 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { YEAR, MONTH } from "@/testConstants";
+import { YEAR, MONTH } from "@/testing/constants";
 import { useCalendar } from "./use-calendar";
 
 vi.mock("@/hooks/use-settings");

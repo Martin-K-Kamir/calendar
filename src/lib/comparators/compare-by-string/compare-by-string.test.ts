@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { compareByString } from "./compare-by-string";
+import { compareByString } from "@/lib";
 
 describe("compareByString()", () => {
     it("should return 0 when strings are equal", () => {

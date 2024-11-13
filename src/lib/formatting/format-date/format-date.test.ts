@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { formatDate } from "./format-date";
+import { formatDate } from "@/lib";
 
 describe("formatDate()", () => {
     it("should call Intl.DateTimeFormat with the correct arguments", () => {

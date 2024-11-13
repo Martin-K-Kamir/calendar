@@ -1,7 +1,10 @@
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { ThemeProviderContext, ThemeProviderState } from "../context";
-import { useTheme } from "./use-theme";
+import {
+    useTheme,
+    ThemeProviderContext,
+    type ThemeProviderState,
+} from "@/features/theme";
 
 describe("useTheme hook", () => {
     it("should return the theme context when used within ThemeProvider", () => {

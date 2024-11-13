@@ -9,11 +9,14 @@ import {
     type Mock,
 } from "vitest";
 import * as lib from "@/lib";
-import { YEAR, MONTH } from "@/testConstants";
+import { YEAR, MONTH } from "@/testing/constants";
 import { useEvents } from "@/hooks/use-events";
 import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
-import { type CalendarEventCell, useCalendar } from "./hooks";
-import { Calendar } from "./calendar";
+import {
+    useCalendar,
+    Calendar,
+    type CalendarEventCell,
+} from "@/features/calendar";
 
 vi.mock("@/lib", async () => {
     const originalModule = await vi.importActual<typeof lib>("@/lib");
@@ -23,7 +26,7 @@ vi.mock("@/lib", async () => {
     };
 });
 
-vi.mock("./hooks");
+vi.mock("@/features/calendar/hooks/use-calendar");
 vi.mock("@/hooks/use-events");
 
 const mockDate = new Date(YEAR, MONTH, 1); // 1st Nov 2024

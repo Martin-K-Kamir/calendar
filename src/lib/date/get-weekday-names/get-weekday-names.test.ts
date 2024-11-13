@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { getWeekdayNames } from "./get-weekday-names";
+import { getWeekdayNames } from "@/lib";
 
 describe("getWeekdayNames()", () => {
     let spy: any;

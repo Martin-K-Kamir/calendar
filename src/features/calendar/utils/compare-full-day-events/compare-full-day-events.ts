@@ -1,10 +1,6 @@
 import { FullDayEvent } from "@/providers/events-provider";
-import {
-    compareByDate,
-    compareByDateRange,
-    compareByString,
-    compareByColor,
-} from "@/lib";
+import { compareByColor } from "@/features/calendar/utils";
+import { compareByDate, compareByDateRange, compareByString } from "@/lib";
 
 export function compareFullDayEvents(a: FullDayEvent, b: FullDayEvent) {
     const dateComparison = compareByDate(a.from, b.from);

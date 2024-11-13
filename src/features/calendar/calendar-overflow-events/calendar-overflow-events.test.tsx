@@ -10,11 +10,13 @@ import {
     type Mock,
 } from "vitest";
 import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
-import { type CalendarEventCell } from "@/features/calendar/hooks/use-calendar";
 import { useEvents } from "@/hooks/use-events";
 import * as lib from "@/lib";
-import { YEAR, MONTH } from "@/testConstants";
-import { CalendarOverflowEvents } from "./calendar-overflow-events";
+import { YEAR, MONTH } from "@/testing/constants";
+import {
+    CalendarOverflowEvents,
+    type CalendarEventCell,
+} from "@/features/calendar";
 
 vi.mock("@/lib", async () => {
     const originalModule = await vi.importActual<typeof lib>("@/lib");

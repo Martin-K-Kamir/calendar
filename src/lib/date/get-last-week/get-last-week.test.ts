@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { YEAR } from "@/testConstants";
-import { getLastWeek } from "./get-last-week";
+import { YEAR } from "@/testing/constants";
+import { getLastWeek } from "@/lib";
 
 const LEAP_YEAR = 2024;
+
 describe("getLastWeek()", () => {
     it("should return the last week of the month with week starting on Sunday", () => {
         const date = new Date(YEAR, 8, 15); // September 15 2024

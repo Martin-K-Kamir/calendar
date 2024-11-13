@@ -1,8 +1,10 @@
 import { useState, useRef, useLayoutEffect } from "react";
-import { type CalendarEventCell } from "@/features/calendar/hooks/use-calendar";
-import { CalendarEventItem } from "../calendar-event-item";
-import { CalendarOverflowEvents } from "../calendar-overflow-events";
-import { groupChildrenByColumn } from "../utils";
+import {
+    CalendarOverflowEvents,
+    CalendarEventItem,
+    type CalendarEventCell,
+} from "@/features/calendar";
+import { groupChildrenByColumn } from "@/features/calendar/utils";
 
 type CalendarEventsListProps = {
     events: CalendarEventCell[];
