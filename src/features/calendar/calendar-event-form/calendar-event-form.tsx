@@ -383,6 +383,7 @@ function CalendarEventForm({
                                                 htmlFor={`${color}-label`}
                                                 variant="circle"
                                                 circleColor={color}
+                                                data-testid={`radio-label-${color}`}
                                             >
                                                 <span className="sr-only">
                                                     {color} barva události

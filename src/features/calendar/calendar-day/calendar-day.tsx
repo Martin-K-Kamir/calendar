@@ -35,10 +35,11 @@ function CalendarDay({ day }: CalendarDayProps) {
                 <div className="p-1.5 space-y-1.5">
                     <div
                         className={cn(
-                            "justify-self-center text-xs px-[0.3em] py-[0.25em] min-w-5 text-center leading-none rounded font-semibold",
+                            "justify-self-center text-xs px-[0.3em] py-[0.25em] min-w-5 text-center leading-none rounded font-semibold cursor-default",
                             isToday(day) &&
                                 "text-white bg-blue-500 dark:bg-blue-700"
                         )}
+                        data-testid={`day-${day.getDate()}-${day.getMonth()}`}
                     >
                         {formatDate(day, { day: "numeric" }).replace(/\./, "")}
                         {isFirstDayOfMonth(day) &&
