@@ -6,7 +6,7 @@ import {
     EventsProviderContext,
     Event,
     EVENT_COLORS,
-} from "./events-provider";
+} from "@/features/calendar";
 
 describe("EventsProvider", () => {
     const TestComponent = () => {

@@ -26,7 +26,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { EVENT_COLORS } from "@/providers/events-provider";
 import { useSettings } from "@/hooks/use-settings";
 import { formatLongDate, formatTime, areValuesDefined } from "@/lib";
 import {
@@ -34,6 +33,7 @@ import {
     generateTimeSlots,
     generateTimeSlotsFrom,
 } from "@/features/calendar/utils";
+import { EVENT_COLORS } from "@/features/calendar";
 
 const eventFormSchema = z.object({
     title: z.string().min(1).max(80),

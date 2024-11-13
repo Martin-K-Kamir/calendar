@@ -1,14 +1,18 @@
 import { addHours } from "date-fns";
 import { z } from "zod";
 import { toast } from "sonner";
-import { type Event, EVENT_COLORS } from "@/providers/events-provider";
-import { useEvents } from "@/hooks/use-events";
 import { formatTime } from "@/lib";
 import {
     roundToNearest15Minutes,
     parseTimeString,
 } from "@/features/calendar/utils";
-import { CalendarEventForm, eventFormSchema } from "@/features/calendar";
+import {
+    CalendarEventForm,
+    eventFormSchema,
+    useEvents,
+    EVENT_COLORS,
+    type Event,
+} from "@/features/calendar";
 
 type CalendarAddEventFormProps = {
     date: Date;
@@ -71,6 +75,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
     }
 
     function handleSubmit(values: z.infer<typeof eventFormSchema>) {
+        console.log("values", values);
         const {
             title,
             color,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FullDayEvent } from "@/providers/events-provider";
+import { FullDayEvent } from "@/features/calendar/context/events-provider";
 import { YEAR, MONTH } from "@/testing/constants";
 import { compareFullDayEvents } from "@/features/calendar/utils";
 

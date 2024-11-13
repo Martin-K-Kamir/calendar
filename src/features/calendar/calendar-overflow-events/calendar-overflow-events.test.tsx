@@ -9,11 +9,12 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
-import { useEvents } from "@/hooks/use-events";
 import * as lib from "@/lib";
 import { YEAR, MONTH } from "@/testing/constants";
 import {
+    useEvents,
+    EVENT_COLORS,
+    DAY_EVENT,
     CalendarOverflowEvents,
     type CalendarEventCell,
 } from "@/features/calendar";
@@ -26,7 +27,7 @@ vi.mock("@/lib", async () => {
     };
 });
 
-vi.mock("@/hooks/use-events", () => ({
+vi.mock("@/features/calendar/hooks/use-events", () => ({
     useEvents: vi.fn(),
 }));
 

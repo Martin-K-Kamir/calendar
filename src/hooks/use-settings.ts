@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SettingsProviderContext } from "@/providers/settings-provider";
+import { SettingsProviderContext } from "@/context/settings-provider";
 
 export function useSettings() {
     const value = useContext(SettingsProviderContext);

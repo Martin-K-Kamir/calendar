@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { EventsProviderContext } from "@/providers/events-provider";
+import { EventsProviderContext } from "@/features/calendar/context/events-provider";
 
 export function useEvents() {
     const value = useContext(EventsProviderContext);

@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { addDays, startOfWeek } from "date-fns";
+import { describe, it, expect, vi, type Mock } from "vitest";
 import { useSettings } from "@/hooks/use-settings";
 import { formatDate } from "@/lib";
-import { describe, it, expect, vi, type Mock } from "vitest";
 import { CalendarWeekDays } from "@/features/calendar";
 
 vi.mock("@/hooks/use-settings");

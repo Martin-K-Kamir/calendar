@@ -10,11 +10,12 @@ import {
 } from "vitest";
 import * as lib from "@/lib";
 import { YEAR, MONTH } from "@/testing/constants";
-import { useEvents } from "@/hooks/use-events";
-import { EVENT_COLORS, DAY_EVENT } from "@/providers/events-provider";
 import {
     useCalendar,
+    useEvents,
     Calendar,
+    EVENT_COLORS,
+    DAY_EVENT,
     type CalendarEventCell,
 } from "@/features/calendar";
 
@@ -27,7 +28,7 @@ vi.mock("@/lib", async () => {
 });
 
 vi.mock("@/features/calendar/hooks/use-calendar");
-vi.mock("@/hooks/use-events");
+vi.mock("@/features/calendar/hooks/use-events");
 
 const mockDate = new Date(YEAR, MONTH, 1); // 1st Nov 2024
 

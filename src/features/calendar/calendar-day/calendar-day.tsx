@@ -9,8 +9,7 @@ import {
     PopoverClose,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useEvents } from "@/hooks/use-events";
-import { CalendarAddEventForm } from "@/features/calendar";
+import { CalendarAddEventForm, useEvents } from "@/features/calendar";
 
 type CalendarDayProps = {
     day: Date;

@@ -9,20 +9,20 @@ import {
     endOfWeek,
 } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
-import { useEvents } from "@/hooks/use-events";
+import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
+import { WeekStartsOn } from "@/types";
 import {
+    useEvents,
     type DayEvent,
     type Event,
     type FullDayEvent,
-} from "@/providers/events-provider";
+} from "@/features/calendar";
 import {
     getColStart,
     getColEnd,
     compareFullDayEvents,
     compareDayEvents,
 } from "@/features/calendar/utils";
-import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
-import { WeekStartsOn } from "@/types";
 
 type Cell = {
     colStart: number;

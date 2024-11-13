@@ -8,10 +8,9 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { useEvents } from "@/hooks/use-events";
 import { YEAR, MONTH } from "@/testing/constants";
 import * as lib from "@/lib";
-import { CalendarDay } from "@/features/calendar";
+import { CalendarDay, useEvents } from "@/features/calendar";
 
 vi.mock("@/lib", async () => {
     const originalModule = await vi.importActual<typeof lib>("@/lib");
@@ -21,7 +20,7 @@ vi.mock("@/lib", async () => {
     };
 });
 
-vi.mock("@/hooks/use-events", () => ({
+vi.mock("@/features/calendar/hooks/use-events", () => ({
     useEvents: vi.fn(),
 }));
 

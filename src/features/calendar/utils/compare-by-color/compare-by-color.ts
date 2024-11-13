@@ -1,4 +1,4 @@
-import { EVENT_COLORS } from "@/providers/events-provider";
+import { EVENT_COLORS } from "@/features/calendar/context/events-provider";
 
 export function compareByColor(
     a: (typeof EVENT_COLORS)[number],

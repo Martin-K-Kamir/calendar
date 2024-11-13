@@ -1,9 +1,9 @@
 import { renderHook } from "@testing-library/react";
-import { useEvents } from "./use-events";
-import { EventsProviderContext } from "@/providers/events-provider";
 import { describe, it, expect, vi } from "vitest";
+import { useEvents, EventsProviderContext } from "@/features/calendar";
 
 describe("useEvents hook", () => {
+    // Todo: find a way to test the error case
     // it("should throw an error if used outside of EventsProvider", () => {
     //     const { result } = renderHook(() => useEvents());
 

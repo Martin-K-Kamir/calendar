@@ -1,4 +1,4 @@
-import { DayEvent } from "@/providers/events-provider";
+import { DayEvent } from "@/features/calendar/context/events-provider";
 import { compareByColor } from "@/features/calendar/utils";
 import { compareByDate, compareByString } from "@/lib";
 

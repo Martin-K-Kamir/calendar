@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { EVENT_COLORS } from "@/providers/events-provider";
+import { EVENT_COLORS } from "@/features/calendar/context/events-provider";
 import { compareByColor } from "@/features/calendar/utils";
 
 describe("compareByColor()", () => {

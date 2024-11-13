@@ -4,6 +4,7 @@ import {
     CalendarDay,
     CalendarWeekDays,
     CalendarEventsList,
+    EventsProvider,
 } from "@/features/calendar";
 
 function Calendar() {
@@ -55,4 +56,12 @@ function Calendar() {
     );
 }
 
-export { Calendar };
+function CalendarWithProvider() {
+    return (
+        <EventsProvider>
+            <Calendar />
+        </EventsProvider>
+    );
+}
+
+export { CalendarWithProvider as Calendar };

@@ -11,15 +11,15 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { formatLongDate, formatTime, cn } from "@/lib";
 import {
+    CalendarUpdateEventForm,
+    useEvents,
     type Event,
     type DayEvent,
     type FullDayEvent,
-} from "@/providers/events-provider";
-import { Button } from "@/components/ui/button";
-import { useEvents } from "@/hooks/use-events";
-import { formatLongDate, formatTime, cn } from "@/lib";
-import { CalendarUpdateEventForm } from "@/features/calendar";
+} from "@/features/calendar";
 
 type CalendarEventItemProps = {
     className?: string;

@@ -1,13 +1,4 @@
 import { renderHook, act } from "@testing-library/react";
-import { useSettings } from "@/hooks/use-settings";
-import { useEvents } from "@/hooks/use-events";
-import {
-    type Event,
-    EVENT_COLORS,
-    DAY_EVENT,
-    FULL_DAY_EVENT,
-} from "@/providers/events-provider";
-import { type UnionOmit } from "@/types";
 import {
     vi,
     describe,
@@ -17,11 +8,20 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
+import { useSettings } from "@/hooks/use-settings";
+import { type UnionOmit } from "@/types";
 import { YEAR, MONTH } from "@/testing/constants";
-import { useCalendar } from "./use-calendar";
+import {
+    useCalendar,
+    useEvents,
+    EVENT_COLORS,
+    DAY_EVENT,
+    FULL_DAY_EVENT,
+    type Event,
+} from "@/features/calendar";
 
 vi.mock("@/hooks/use-settings");
-vi.mock("@/hooks/use-events");
+vi.mock("@/features/calendar/hooks/use-events");
 
 const FIRST_WEEK = 0;
 const SECOND_WEEK = 1;

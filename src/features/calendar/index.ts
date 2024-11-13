@@ -8,4 +8,17 @@ export { CalendarHeader } from "./calendar-header";
 export { CalendarOverflowEvents } from "./calendar-overflow-events";
 export { CalendarUpdateEventForm } from "./calendar-update-event-form";
 export { CalendarWeekDays } from "./calendar-week-days";
-export { useCalendar, type CalendarEventCell } from "./hooks";
+export { useCalendar, useEvents, type CalendarEventCell } from "./hooks";
+export {
+    EventsProvider,
+    EventsProviderContext,
+    FULL_DAY_EVENT,
+    DAY_EVENT,
+    EVENT_COLORS,
+    type DayEvent,
+    type Event,
+    type EventBase,
+    type EventsContext,
+    type EventsProviderProps,
+    type FullDayEvent,
+} from "./context";

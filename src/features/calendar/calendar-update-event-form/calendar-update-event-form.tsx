@@ -1,14 +1,19 @@
 import { addHours } from "date-fns";
 import { z } from "zod";
 import { toast } from "sonner";
-import { type Event, EVENT_COLORS } from "@/providers/events-provider";
-import { useEvents } from "@/hooks/use-events";
 import { formatTime } from "@/lib";
 import {
     roundToNearest15Minutes,
     parseTimeString,
 } from "@/features/calendar/utils";
-import { CalendarEventForm, eventFormSchema } from "@/features/calendar";
+import {
+    CalendarEventForm,
+    useEvents,
+    eventFormSchema,
+    EVENT_COLORS,
+    FULL_DAY_EVENT,
+    type Event,
+} from "@/features/calendar";
 
 type CalendarUpdateEventFormProps = {
     event: Event;
@@ -21,7 +26,7 @@ function CalendarUpdateEventForm({
 }: CalendarUpdateEventFormProps) {
     const { updateEvent } = useEvents();
     const currentTime = new Date();
-    const isFullDayEvent = event.kind === "FULL_DAY_EVENT";
+    const isFullDayEvent = event.kind === FULL_DAY_EVENT;
 
     const defaultFormValues: z.infer<typeof eventFormSchema> = {
         title: event.title,

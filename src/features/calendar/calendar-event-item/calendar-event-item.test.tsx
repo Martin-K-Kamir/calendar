@@ -9,17 +9,17 @@ import {
     afterAll,
     type Mock,
 } from "vitest";
-import { useEvents } from "@/hooks/use-events";
+import { YEAR, MONTH } from "@/testing/constants";
 import {
+    CalendarEventItem,
+    useEvents,
     EVENT_COLORS,
     DAY_EVENT,
     FULL_DAY_EVENT,
     type Event,
-} from "@/providers/events-provider";
-import { YEAR, MONTH } from "@/testing/constants";
-import { CalendarEventItem } from "@/features/calendar";
+} from "@/features/calendar";
 
-vi.mock("@/hooks/use-events");
+vi.mock("@/features/calendar/hooks/use-events");
 vi.mock("sonner");
 
 const mockEvent = {
@@ -75,8 +75,6 @@ describe("CalendarEventItem Component", () => {
 
         const elementString = screen.getByText("Test Event").outerHTML;
         const regex = new RegExp(`bg-${mockEvent.color}`);
-
-        console.log(elementString);
 
         expect(regex.test(elementString)).toBe(true);
     });
