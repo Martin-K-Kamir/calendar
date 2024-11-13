@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { addHours } from "date-fns";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -38,41 +39,44 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
         endTime: formatTime(roundToNearest15Minutes(addHours(currentTime, 1))),
     };
 
-    function handleWatch(values: z.infer<typeof eventFormSchema>) {
-        const {
-            title,
-            fullDay,
-            color,
-            date,
-            dateRange,
-            description,
-            endTime,
-            startTime,
-        } = values;
-
-        const baseEvent = {
-            description,
-            color,
-            title: title || "(bez názvu)",
-        };
-
-        if (fullDay) {
-            addDraftEvent({
-                ...baseEvent,
-                kind: "FULL_DAY_EVENT",
-                from: dateRange.from,
-                to: dateRange.to,
-            });
-        } else {
-            addDraftEvent({
-                ...baseEvent,
+    const handleWatch = useCallback(
+        (values: z.infer<typeof eventFormSchema>) => {
+            const {
+                title,
+                fullDay,
+                color,
                 date,
-                kind: "DAY_EVENT",
-                startTime: parseTimeString(startTime),
-                endTime: parseTimeString(endTime),
-            });
-        }
-    }
+                dateRange,
+                description,
+                endTime,
+                startTime,
+            } = values;
+
+            const baseEvent = {
+                description,
+                color,
+                title: title || "(bez názvu)",
+            };
+
+            if (fullDay) {
+                addDraftEvent({
+                    ...baseEvent,
+                    kind: "FULL_DAY_EVENT",
+                    from: dateRange.from,
+                    to: dateRange.to,
+                });
+            } else {
+                addDraftEvent({
+                    ...baseEvent,
+                    date,
+                    kind: "DAY_EVENT",
+                    startTime: parseTimeString(startTime),
+                    endTime: parseTimeString(endTime),
+                });
+            }
+        },
+        [addDraftEvent]
+    );
 
     function handleSubmit(values: z.infer<typeof eventFormSchema>) {
         const {

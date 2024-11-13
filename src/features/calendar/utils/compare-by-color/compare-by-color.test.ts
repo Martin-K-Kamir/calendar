@@ -23,7 +23,10 @@ describe("compareByColor()", () => {
     it("should handle colors not in the EVENT_COLORS array", () => {
         const colorNotInArray = "not-in-array";
         const colorInArray = EVENT_COLORS[0];
+
+        // eslint-disable-next-line
         expect(compareByColor(colorNotInArray as any, colorInArray)).toBe(-1);
+        // eslint-disable-next-line
         expect(compareByColor(colorInArray, colorNotInArray as any)).toBe(1);
     });
 });

@@ -104,7 +104,7 @@ function CalendarEventForm({
 
     useEffect(() => {
         onWatch?.(form.getValues());
-    }, [form.getValues]);
+    }, [form, form.getValues, onWatch]);
 
     useEffect(() => {
         if (!onWatch) {
@@ -126,7 +126,7 @@ function CalendarEventForm({
         });
 
         return () => subscription.unsubscribe();
-    }, [form.watch]);
+    }, [form, form.watch, onWatch]);
 
     return (
         <Form {...form}>

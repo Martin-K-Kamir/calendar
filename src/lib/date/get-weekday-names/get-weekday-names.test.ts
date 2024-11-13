@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { getWeekdayNames } from "@/lib";
 
 describe("getWeekdayNames()", () => {
+    // eslint-disable-next-line
     let spy: any;
 
     beforeEach(() => {

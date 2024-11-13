@@ -162,7 +162,7 @@ describe("CalendarEventsList Component", () => {
         const containerElement =
             screen.getByText("Test Event 1").parentElement?.parentElement;
         if (containerElement) {
-            const resizeObserverCallback = (window.ResizeObserver as any).mock
+            const resizeObserverCallback = (window.ResizeObserver as Mock).mock
                 .calls[0][0];
             resizeObserverCallback([{ target: containerElement }]);
         }

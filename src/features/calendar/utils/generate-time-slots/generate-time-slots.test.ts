@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { generateTimeSlots } from "@/features/calendar/utils";
 
 describe("generateTimeSlots()", () => {
+    // eslint-disable-next-line
     let spy: any;
 
     beforeEach(() => {

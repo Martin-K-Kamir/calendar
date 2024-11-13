@@ -8,6 +8,7 @@ describe("cn()", () => {
     });
 
     it("should handle conditional class names", () => {
+        // eslint-disable-next-line
         const result = cn("class1", false && "class2", "class3");
         expect(result).toBe("class1 class3");
     });
