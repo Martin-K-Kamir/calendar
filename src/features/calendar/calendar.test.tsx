@@ -143,7 +143,9 @@ describe("Calendar Component", () => {
 
     it("renders current month and year", () => {
         render(<Calendar />);
-        expect(screen.getByText("November 2024")).toBeDefined();
+        expect(
+            screen.getByText(`November ${new Date().getFullYear()}`)
+        ).toBeDefined();
     });
 
     it("renders week days", () => {

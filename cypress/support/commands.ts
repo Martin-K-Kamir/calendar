@@ -25,13 +25,33 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+Cypress.Commands.add("getByTestId", (testId: string) => {
+    return cy.get(`[data-testid='${testId}']`);
+});
+
+Cypress.Commands.add("mockDateTimeFormat", (locale = "en-GB") => {
+    cy.window().then(win => {
+        const originalDateTimeFormat = win.Intl.DateTimeFormat;
+
+        win.Intl.DateTimeFormat = function (
+            _: never,
+            options: Record<string, any>
+        ) {
+            return new originalDateTimeFormat(locale, options);
+        } as unknown as typeof Intl.DateTimeFormat;
+
+        win.Intl.DateTimeFormat.supportedLocalesOf =
+            originalDateTimeFormat.supportedLocalesOf;
+    });
+});
+
+declare global {
+    namespace Cypress {
+        interface Chainable {
+            getByTestId(testId: string): Chainable<JQuery<HTMLElement>>;
+            mockDateTimeFormat(local?: string): Chainable<void>;
+        }
+    }
+}
+
+export {};
