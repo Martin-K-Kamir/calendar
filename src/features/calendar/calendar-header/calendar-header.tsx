@@ -22,7 +22,7 @@ function CalendarHeader({
                 <Button
                     variant="outline"
                     onClick={onTodayClick}
-                    data-testid="todayButton"
+                    data-testid="today-button"
                 >
                     Dnes
                 </Button>
@@ -31,7 +31,7 @@ function CalendarHeader({
                         size="icon"
                         variant="ghost"
                         onClick={onPreviousMonthClick}
-                        data-testid="previousMonthButton"
+                        data-testid="previous-month-button"
                     >
                         <ChevronLeft className="text-zinc-950 size-[1.2rem] dark:text-zinc-200" />
                     </Button>
@@ -39,7 +39,7 @@ function CalendarHeader({
                         size="icon"
                         variant="ghost"
                         onClick={onNextMonthClick}
-                        data-testid="nextMonthButton"
+                        data-testid="next-month-button"
                     >
                         <ChevronRight className="text-zinc-950 size-[1.2rem] dark:text-zinc-200" />
                     </Button>

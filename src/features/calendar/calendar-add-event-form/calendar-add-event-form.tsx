@@ -126,7 +126,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
     }
 
     return (
-        <div className="space-y-4" data-testid="addEventForm">
+        <div className="space-y-4" data-testid="add-event-form">
             <p className="text-lg font-semibold line-clamp-2">Přidat událost</p>
             <CalendarEventForm
                 defaultFormValues={defaultFormValues}

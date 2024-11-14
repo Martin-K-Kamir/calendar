@@ -139,7 +139,7 @@ function CalendarEventForm({
                             <FormControl>
                                 <Input
                                     placeholder="Název události"
-                                    data-testid="titleInput"
+                                    data-testid="title-input"
                                     {...field}
                                     ref={titleInputRef}
                                 />
@@ -159,7 +159,7 @@ function CalendarEventForm({
                                     id="full-day"
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
-                                    data-testid="fullDaySwitch"
+                                    data-testid="full-day-switch"
                                 />
                             </FormControl>
                             <FormLabel htmlFor="full-day" className="!mt-0">
@@ -183,7 +183,7 @@ function CalendarEventForm({
                                                 <Button
                                                     variant="outline"
                                                     className="font-normal"
-                                                    data-testid="dateButton"
+                                                    data-testid="date-button"
                                                 >
                                                     {formatLongDate(
                                                         field.value
@@ -220,7 +220,7 @@ function CalendarEventForm({
                                                 <Button
                                                     variant="outline"
                                                     className="font-normal"
-                                                    data-testid="dateRangeButton"
+                                                    data-testid="date-range-button"
                                                 >
                                                     <span className="sr-only">
                                                         vybrete datum
@@ -268,7 +268,7 @@ function CalendarEventForm({
                                                 <Button
                                                     variant="outline"
                                                     className="font-normal"
-                                                    data-testid="startTimeButton"
+                                                    data-testid="start-time-button"
                                                 >
                                                     <span className="sr-only">
                                                         Vyberte počáteční čas
@@ -282,7 +282,7 @@ function CalendarEventForm({
                                                 <SelectItem
                                                     key={timeSlot}
                                                     value={timeSlot}
-                                                    data-testid={`startTimeOption-${timeSlot}`}
+                                                    data-testid={`start-time-option-${timeSlot}`}
                                                 >
                                                     {timeSlot}
                                                 </SelectItem>
@@ -312,7 +312,7 @@ function CalendarEventForm({
                                                 <Button
                                                     variant="outline"
                                                     className="font-normal"
-                                                    data-testid="endTimeButton"
+                                                    data-testid="end-time-button"
                                                 >
                                                     <span className="sr-only">
                                                         Vyberte konečný čas
@@ -351,7 +351,7 @@ function CalendarEventForm({
                                 <Textarea
                                     placeholder="Popis události"
                                     className="max-h-52 h-16"
-                                    data-testid="descriptionInput"
+                                    data-testid="description-input"
                                     {...field}
                                 />
                             </FormControl>
@@ -377,7 +377,7 @@ function CalendarEventForm({
                                                 value={color}
                                                 id={`${color}-label`}
                                                 className="peer sr-only"
-                                                data-testid="colorRadio"
+                                                data-testid="radio-color"
                                             />
                                             <Label
                                                 htmlFor={`${color}-label`}
@@ -399,7 +399,7 @@ function CalendarEventForm({
                 />
 
                 <div className="space-x-3">
-                    <Button data-testid="saveFormButton">Uložit</Button>
+                    <Button data-testid="save-form-button">Uložit</Button>
                 </div>
             </form>
         </Form>

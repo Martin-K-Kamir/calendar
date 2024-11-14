@@ -84,15 +84,15 @@ describe("CalendarEventItem Component", () => {
 
         fireEvent.click(screen.getByText("Test Event"));
 
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
-        expect(screen.getByTestId("eventItemPreview")).toBeDefined();
+        expect(screen.getByTestId("popover-content")).toBeDefined();
+        expect(screen.getByTestId("event-item-preview")).toBeDefined();
     });
 
     it("handles event removal", () => {
         render(<CalendarEventItem event={mockEvent} />);
 
         fireEvent.click(screen.getByText("Test Event"));
-        fireEvent.click(screen.getByTestId("removeEventButton"));
+        fireEvent.click(screen.getByTestId("remove-event-button"));
 
         expect(mockRemoveEvent).toHaveBeenCalledWith(mockEvent.id);
         expect(toast).toHaveBeenCalledWith(
@@ -105,18 +105,18 @@ describe("CalendarEventItem Component", () => {
         render(<CalendarEventItem event={mockEvent} />);
 
         fireEvent.click(screen.getByText("Test Event"));
-        fireEvent.click(screen.getByTestId("editEventButton"));
+        fireEvent.click(screen.getByTestId("edit-event-button"));
 
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
-        expect(screen.getByTestId("updateEventForm")).toBeDefined();
+        expect(screen.getByTestId("popover-content")).toBeDefined();
+        expect(screen.getByTestId("update-event-form")).toBeDefined();
     });
 
     it("closes the popover", () => {
         render(<CalendarEventItem event={mockEvent} />);
 
         fireEvent.click(screen.getByText("Test Event"));
-        fireEvent.click(screen.getByTestId("closePopoverButton"));
+        fireEvent.click(screen.getByTestId("popover-close-button"));
 
-        expect(screen.queryByTestId("popoverContent")).toBeNull();
+        expect(screen.queryByTestId("popover-content")).toBeNull();
     });
 });

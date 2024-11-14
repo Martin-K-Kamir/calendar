@@ -131,18 +131,18 @@ describe("CalendarOverflowEvents Component", () => {
     it("opens and closes the popover", () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        fireEvent.click(screen.getByTestId("popoverTrigger"));
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
+        fireEvent.click(screen.getByTestId("popover-trigger"));
+        expect(screen.getByTestId("popover-content")).toBeDefined();
 
-        fireEvent.click(screen.getByTestId("closePopoverButton"));
-        expect(screen.queryByTestId("popoverContent")).toBeNull();
+        fireEvent.click(screen.getByTestId("popover-close-button"));
+        expect(screen.queryByTestId("popover-content")).toBeNull();
     });
 
     it("renders events inside the popover", async () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        await userEvent.click(screen.getByTestId("popoverTrigger"));
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
+        await userEvent.click(screen.getByTestId("popover-trigger"));
+        expect(screen.getByTestId("popover-content")).toBeDefined();
 
         mockData.events.forEach(event => {
             expect(screen.getByText(event.event.title)).toBeDefined();
@@ -152,8 +152,8 @@ describe("CalendarOverflowEvents Component", () => {
     it("displays the correct day name in the popover header", async () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        fireEvent.click(screen.getByTestId("popoverTrigger"));
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
+        fireEvent.click(screen.getByTestId("popover-trigger"));
+        expect(screen.getByTestId("popover-content")).toBeDefined();
 
         const dayName = lib.formatLongDate(
             mockData.daysOfWeek[mockData.colStart - 1]

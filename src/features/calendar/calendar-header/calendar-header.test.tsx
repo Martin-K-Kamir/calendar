@@ -54,24 +54,24 @@ describe("CalendarHeader Component", () => {
 
     it("calls onTodayClick when 'Dnes' button is clicked", () => {
         setup();
-        fireEvent.click(screen.getByTestId("todayButton"));
+        fireEvent.click(screen.getByTestId("today-button"));
         expect(mockOnTodayClick).toHaveBeenCalled();
     });
 
     it("calls onPreviousMonthClick when previous month button is clicked", () => {
         setup();
-        fireEvent.click(screen.getByTestId("previousMonthButton"));
+        fireEvent.click(screen.getByTestId("previous-month-button"));
         expect(mockOnPreviousMonthClick).toHaveBeenCalled();
     });
 
     it("calls onNextMonthClick when next month button is clicked", () => {
         setup();
-        fireEvent.click(screen.getByTestId("nextMonthButton"));
+        fireEvent.click(screen.getByTestId("next-month-button"));
         expect(mockOnNextMonthClick).toHaveBeenCalled();
     });
 
     it("renders the ThemeToggle component", () => {
         setup();
-        expect(screen.getByTestId("themeButton")).toBeDefined();
+        expect(screen.getByTestId("theme-button")).toBeDefined();
     });
 });

@@ -29,15 +29,15 @@ describe("ThemeToggle Component", () => {
 
     it("renders correctly", () => {
         render(<ThemeToggle />);
-        expect(screen.getByTestId("themeButton")).toBeDefined();
+        expect(screen.getByTestId("theme-button")).toBeDefined();
     });
 
     it("toggles theme to light", async () => {
         render(<ThemeToggle />);
 
-        userEvent.click(screen.getByTestId("themeButton"));
+        userEvent.click(screen.getByTestId("theme-button"));
 
-        const lightButton = await screen.findByTestId("themeButtonLight");
+        const lightButton = await screen.findByTestId("theme-button-light");
 
         fireEvent.click(lightButton);
 
@@ -47,9 +47,9 @@ describe("ThemeToggle Component", () => {
     it("toggles theme to dark", async () => {
         render(<ThemeToggle />);
 
-        userEvent.click(screen.getByTestId("themeButton"));
+        userEvent.click(screen.getByTestId("theme-button"));
 
-        const darkButton = await screen.findByTestId("themeButtonDark");
+        const darkButton = await screen.findByTestId("theme-button-dark");
 
         fireEvent.click(darkButton);
 
@@ -59,9 +59,9 @@ describe("ThemeToggle Component", () => {
     it("toggles theme to system", async () => {
         render(<ThemeToggle />);
 
-        userEvent.click(screen.getByTestId("themeButton"));
+        userEvent.click(screen.getByTestId("theme-button"));
 
-        const systemButton = await screen.findByTestId("themeButtonSystem");
+        const systemButton = await screen.findByTestId("theme-button-system");
 
         fireEvent.click(systemButton);
 

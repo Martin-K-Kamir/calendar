@@ -51,11 +51,11 @@ describe("CalendarAddEventForm Component", () => {
     //     const onAddEvent = vi.fn();
     //     render(<CalendarAddEventForm date={date} onAddEvent={onAddEvent} />);
 
-    //     fireEvent.change(screen.getByTestId("titleInput"), {
+    //     fireEvent.change(screen.getByTestId("title-input"), {
     //         target: { value: "Test Event" },
     //     });
-    //     fireEvent.click(screen.getByTestId("fullDaySwitch"));
-    //     await userEvent.click(screen.getByTestId("saveFormButton"));
+    //     fireEvent.click(screen.getByTestId("full-day-switch"));
+    //     await userEvent.click(screen.getByTestId("save-form-button"));
 
     //     expect(mockAddEvent).toHaveBeenCalledWith({
     //         title: "Test Event",
@@ -80,10 +80,10 @@ describe("CalendarAddEventForm Component", () => {
     //     const onAddEvent = vi.fn();
     //     render(<CalendarAddEventForm date={date} onAddEvent={onAddEvent} />);
 
-    //     fireEvent.change(screen.getByTestId("titleInput"), {
+    //     fireEvent.change(screen.getByTestId("title-input"), {
     //         target: { value: "Test Event" },
     //     });
-    //     await userEvent.click(screen.getByTestId("saveFormButton"));
+    //     await userEvent.click(screen.getByTestId("save-form-button"));
 
     //     expect(mockAddEvent).toHaveBeenCalledWith({
     //         title: "Test Event",
@@ -108,7 +108,7 @@ describe("CalendarAddEventForm Component", () => {
         const date = new Date();
         render(<CalendarAddEventForm date={date} />);
 
-        fireEvent.change(screen.getByTestId("titleInput"), {
+        fireEvent.change(screen.getByTestId("title-input"), {
             target: { value: "Updated Event" },
         });
 
@@ -122,7 +122,7 @@ describe("CalendarAddEventForm Component", () => {
             endTime: expect.any(Date),
         });
 
-        fireEvent.click(screen.getByTestId("fullDaySwitch"));
+        fireEvent.click(screen.getByTestId("full-day-switch"));
 
         expect(mockAddDraftEvent).toHaveBeenCalledWith({
             title: "Updated Event",

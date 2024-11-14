@@ -31,7 +31,7 @@ function CalendarDay({ day }: CalendarDayProps) {
             open={isPopoverOpen}
             onOpenChange={setIsPopoverOpen}
         >
-            <PopoverTrigger asChild data-testid="popoverTrigger">
+            <PopoverTrigger asChild data-testid="popover-trigger">
                 <div className="p-1.5 space-y-1.5">
                     <div
                         className={cn(
@@ -54,14 +54,14 @@ function CalendarDay({ day }: CalendarDayProps) {
                 alignOffset={10}
                 sideOffset={8}
                 className="min-w-[22rem] w-auto"
-                data-testid="popoverContent"
+                data-testid="popover-content"
             >
                 <PopoverClose asChild>
                     <Button
                         size="icon"
                         variant="ghost"
                         className="absolute right-2 top-2 size-6"
-                        data-testid="closePopoverButton"
+                        data-testid="popover-close-button"
                     >
                         <XIcon className="size-4" />
                     </Button>

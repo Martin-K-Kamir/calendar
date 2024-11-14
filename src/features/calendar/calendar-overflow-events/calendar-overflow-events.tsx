@@ -30,7 +30,7 @@ function CalendarOverflowEvents({
             <PopoverTrigger asChild>
                 <button
                     className="block w-full pointer-events-auto px-2 py-[3px] rounded-md text-xs font-semibold text-left bg-white text-zinc-900 hover:bg-zinc-100 dark:text-white dark:bg-zinc-950 dark:hover:bg-zinc-800"
-                    data-testid="popoverTrigger"
+                    data-testid="popover-trigger"
                 >
                     {amount} další
                 </button>
@@ -39,14 +39,14 @@ function CalendarOverflowEvents({
                 className="w-64 h-auto"
                 align="center"
                 side="top"
-                data-testid="popoverContent"
+                data-testid="popover-content"
             >
                 <PopoverClose asChild>
                     <Button
                         size="icon"
                         variant="ghost"
                         className="absolute right-2 top-2 size-6"
-                        data-testid="closePopoverButton"
+                        data-testid="popover-close-button"
                     >
                         <XIcon className="size-4" />
                     </Button>

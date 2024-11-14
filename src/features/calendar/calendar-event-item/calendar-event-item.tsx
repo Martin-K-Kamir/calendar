@@ -95,7 +95,7 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
                 align="start"
                 sticky="always"
                 className="w-[22rem] pb-4"
-                data-testid="popoverContent"
+                data-testid="popover-content"
             >
                 <div className="flex justify-end gap-1.5 translate-x-2 -translate-y-2">
                     {!isEditing && (
@@ -104,7 +104,7 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
                             variant="ghost"
                             className="size-6"
                             onClick={handleEditEvent}
-                            data-testid="editEventButton"
+                            data-testid="edit-event-button"
                         >
                             <PencilIcon className="size-3.5" />
                         </Button>
@@ -114,7 +114,7 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
                         variant="ghost"
                         className="size-6"
                         onClick={handleRemoveEvent}
-                        data-testid="removeEventButton"
+                        data-testid="remove-event-button"
                     >
                         <TrashIcon className="size-3.5" />
                     </Button>
@@ -123,7 +123,7 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
                         variant="ghost"
                         className="size-6"
                         onClick={handleClose}
-                        data-testid="closePopoverButton"
+                        data-testid="popover-close-button"
                     >
                         <XIcon className="size-4" />
                     </Button>
@@ -230,7 +230,7 @@ function EventItemPreview({
     color,
 }: EventItemPreviewProps) {
     return (
-        <div data-testid="eventItemPreview">
+        <div data-testid="event-item-preview">
             <div className="grid grid-cols-[min-content,auto] items-baseline gap-3">
                 <span
                     className={`inline-block size-3.5 rounded bg-${color}-600 translate-y-px`}

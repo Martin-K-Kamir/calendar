@@ -67,26 +67,26 @@ describe("CalendarDay Component", () => {
 
     it("opens and closes the popover", () => {
         render(<CalendarDay day={mockDate} />);
-        fireEvent.click(screen.getByTestId("popoverTrigger"));
+        fireEvent.click(screen.getByTestId("popover-trigger"));
 
-        expect(screen.getByTestId("popoverContent")).toBeDefined();
-        expect(screen.getByTestId("addEventForm")).toBeDefined();
+        expect(screen.getByTestId("popover-content")).toBeDefined();
+        expect(screen.getByTestId("add-event-form")).toBeDefined();
 
-        fireEvent.click(screen.getByTestId("closePopoverButton"));
-        expect(screen.queryByTestId("popoverContent")).toBeNull();
+        fireEvent.click(screen.getByTestId("popover-close-button"));
+        expect(screen.queryByTestId("popover-content")).toBeNull();
     });
 
     it("calls addDraftEvent when popover opens", () => {
         render(<CalendarDay day={mockDate} />);
-        fireEvent.click(screen.getByTestId("popoverTrigger"));
+        fireEvent.click(screen.getByTestId("popover-trigger"));
 
         expect(mockAddDraftEvent).toHaveBeenCalled();
     });
 
     it("calls removeDraftEvent when popover closes", () => {
         render(<CalendarDay day={mockDate} />);
-        fireEvent.click(screen.getByTestId("popoverTrigger"));
-        fireEvent.click(screen.getByTestId("closePopoverButton"));
+        fireEvent.click(screen.getByTestId("popover-trigger"));
+        fireEvent.click(screen.getByTestId("popover-close-button"));
 
         expect(mockRemoveDraftEvent).toHaveBeenCalled();
     });

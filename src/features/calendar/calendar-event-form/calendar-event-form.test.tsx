@@ -68,39 +68,40 @@ describe("CalendarEventForm Component", () => {
         );
 
         const titleInputValue = screen
-            .getByTestId("titleInput")
+            .getByTestId("title-input")
             .getAttribute("value");
 
         expect(titleInputValue).toBe(defaultFormValues.title);
 
         const fullDaySwitchState = screen
-            .getByTestId("fullDaySwitch")
+            .getByTestId("full-day-switch")
             .getAttribute("data-state");
         expect(fullDaySwitchState).toBe("unchecked");
 
-        const dateButtonText = screen.getByTestId("dateButton").textContent;
+        const dateButtonText = screen.getByTestId("date-button").textContent;
         expect(dateButtonText).toBe(
             lib.formatLongDate(new Date(YEAR, MONTH, 17))
         );
 
-        expect(screen.queryByTestId("dateRangeButton")).toBeNull();
+        expect(screen.queryByTestId("date-range-button")).toBeNull();
 
-        const startTimeText = screen.getByTestId("startTimeButton").textContent;
+        const startTimeText =
+            screen.getByTestId("start-time-button").textContent;
         expect(
             new RegExp(`${defaultFormValues.startTime}`).test(startTimeText!)
         ).toBe(true);
 
-        const endTimeText = screen.getByTestId("endTimeButton").textContent;
+        const endTimeText = screen.getByTestId("end-time-button").textContent;
         expect(
             new RegExp(`${defaultFormValues.endTime}`).test(endTimeText!)
         ).toBe(true);
 
         const descriptionInputText =
-            screen.getByTestId("descriptionInput").textContent;
+            screen.getByTestId("description-input").textContent;
 
         expect(descriptionInputText).toBe(defaultFormValues.description);
 
-        const colorRadios = screen.getAllByTestId("colorRadio");
+        const colorRadios = screen.getAllByTestId("radio-color");
 
         colorRadios.forEach(radio => {
             expect(radio.getAttribute("data-state")).toBe(
@@ -120,15 +121,15 @@ describe("CalendarEventForm Component", () => {
         );
 
         const fullDaySwitchState = screen
-            .getByTestId("fullDaySwitch")
+            .getByTestId("full-day-switch")
             .getAttribute("data-state");
         expect(fullDaySwitchState).toBe("checked");
 
-        expect(screen.queryByTestId("startTimeButton")).toBeNull();
-        expect(screen.queryByTestId("endTimeButton")).toBeNull();
+        expect(screen.queryByTestId("start-time-button")).toBeNull();
+        expect(screen.queryByTestId("end-time-button")).toBeNull();
 
         const dateRangeButtonText =
-            screen.getByTestId("dateRangeButton").textContent;
+            screen.getByTestId("date-range-button").textContent;
 
         const re = new RegExp(
             `${lib.formatLongDate(
@@ -158,10 +159,10 @@ describe("CalendarEventForm Component", () => {
             />
         );
 
-        fireEvent.click(screen.getByTestId("startTimeButton"));
-        fireEvent.click(screen.getByTestId("startTimeOption-11:00 PM"));
+        fireEvent.click(screen.getByTestId("start-time-button"));
+        fireEvent.click(screen.getByTestId("start-time-option-11:00 PM"));
 
-        const endTimeText = screen.getByTestId("endTimeButton").textContent!;
+        const endTimeText = screen.getByTestId("end-time-button").textContent!;
         expect(/11:45 PM/.test(endTimeText)).toBe(true);
 
         Intl.DateTimeFormat = originalDateTimeFormat;
@@ -177,7 +178,7 @@ describe("CalendarEventForm Component", () => {
     //         />
     //     );
 
-    //     await userEvent.click(screen.getByTestId("saveFormButton"));
+    //     await userEvent.click(screen.getByTestId("save-form-button"));
     //     expect(handleSubmit).toHaveBeenCalled();
     // });
 
@@ -191,7 +192,7 @@ describe("CalendarEventForm Component", () => {
             />
         );
 
-        fireEvent.change(screen.getByTestId("titleInput"), {
+        fireEvent.change(screen.getByTestId("title-input"), {
             target: { value: "Updated Event" },
         });
 

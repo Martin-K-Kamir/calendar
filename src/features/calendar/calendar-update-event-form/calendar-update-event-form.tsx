@@ -93,7 +93,7 @@ function CalendarUpdateEventForm({
     }
 
     return (
-        <div className="space-y-5" data-testid="updateEventForm">
+        <div className="space-y-5" data-testid="update-event-form">
             <p className="text-lg font-semibold">Upravit událost</p>
             <CalendarEventForm
                 defaultFormValues={defaultFormValues}

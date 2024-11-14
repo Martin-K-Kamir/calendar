@@ -71,7 +71,7 @@ describe("CalendarUpdateEventForm Component", () => {
     //         target: { value: "Updated Description" },
     //     });
 
-    //     await userEvent.click(screen.getByTestId("saveFormButton"));
+    //     await userEvent.click(screen.getByTestId("save-form-button"));
 
     //     expect(mockUpdateEvent).toHaveBeenCalledWith(
     //         expect.objectContaining({
@@ -104,7 +104,7 @@ describe("CalendarUpdateEventForm Component", () => {
     //         />
     //     );
 
-    //     await userEvent.click(screen.getByTestId("saveFormButton"));
+    //     await userEvent.click(screen.getByTestId("save-form-button"));
 
     //     expect(mockUpdateEvent).toHaveBeenCalledWith(
     //         expect.objectContaining({

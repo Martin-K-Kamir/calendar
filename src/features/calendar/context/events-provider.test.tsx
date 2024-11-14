@@ -29,7 +29,7 @@ describe("EventsProvider", () => {
         return (
             <div>
                 <span data-testid="events">{JSON.stringify(events)}</span>
-                <span data-testid="draftEvent">
+                <span data-testid="draft-event">
                     {JSON.stringify(draftEvent)}
                 </span>
                 <button
@@ -148,7 +148,7 @@ describe("EventsProvider", () => {
         });
 
         const draftEvent = JSON.parse(
-            screen.getByTestId("draftEvent").textContent || "{}"
+            screen.getByTestId("draft-event").textContent || "{}"
         );
         expect(draftEvent.title).toBe("Draft Event");
     });
@@ -168,7 +168,7 @@ describe("EventsProvider", () => {
             screen.getByText("Remove Draft Event").click();
         });
 
-        const draftEvent = screen.getByTestId("draftEvent").textContent;
+        const draftEvent = screen.getByTestId("draft-event").textContent;
         expect(draftEvent).toBe("null");
     });
 
