@@ -1,87 +1,89 @@
 /// <reference types="cypress" />
 
-describe("calendar", () => {
-    const YEAR = 2024;
-    const MONTH = 10;
-    const DAY = 7;
-    const fixedDate = new Date(YEAR, MONTH, DAY);
+function createBaseEvent(title: string) {
+    return {
+        title,
+        id: crypto.randomUUID(),
+        description: "",
+        color: "pink",
+    };
+}
 
-    const events = [
-        {
-            title: "Test Event 1",
-            description: "",
-            color: "pink",
-            id: "25cc800b-09e0-4e84-9df0-3cc0d23376d3",
-            kind: "FULL_DAY_EVENT",
-            from: "2024-10-31T23:00:00.000Z",
-            to: "2024-11-02T23:00:00.000Z",
-        },
-        {
-            title: "Test Event 4",
-            description: "",
-            color: "indigo",
-            kind: "FULL_DAY_EVENT",
-            from: "2024-12-09T23:00:00.000Z",
-            to: "2024-12-12T23:00:00.000Z",
-            id: "6337b477-645f-4277-8958-915709321162",
-        },
-        {
-            title: "Test Event 3",
-            description: "",
-            color: "pink",
-            date: "2024-10-09T22:00:00.000Z",
-            kind: "DAY_EVENT",
-            startTime: "2024-11-14T23:15:00.000Z",
-            endTime: "2024-11-15T00:15:00.000Z",
-            id: "251510d6-d0a2-4c74-b583-1627a29d7c15",
-        },
-        {
-            title: "Test Leap Event 1",
-            description: "",
-            color: "pink",
-            id: "7716670f-fe50-4c92-82e6-1e5827cb1a7b",
-            date: "2024-10-28T23:00:00.000Z",
-            kind: "DAY_EVENT",
-            startTime: "2024-11-14T23:15:00.000Z",
-            endTime: "2024-11-15T00:15:00.000Z",
-        },
-        {
-            title: "Test Leap Event 2",
-            description: "",
-            color: "pink",
-            date: "2024-11-29T23:00:00.000Z",
-            kind: "DAY_EVENT",
-            startTime: "2024-11-14T23:15:00.000Z",
-            endTime: "2024-11-15T00:15:00.000Z",
-            id: "542e9594-b642-474f-ab2b-2761c66b82f5",
-        },
-        {
-            title: "Test Event 2",
-            description: "",
-            color: "pink",
-            id: "ee53b007-169f-4129-9243-fc0e11c5d739",
-            date: "2024-11-06T23:00:00.000Z",
-            kind: "DAY_EVENT",
-            startTime: "2024-11-15T09:00:00.000Z",
-            endTime: "2024-11-15T10:00:00.000Z",
-        },
-    ];
+function createDayEvent(
+    title: string,
+    date: Date,
+    startTime: number,
+    endTime: number
+) {
+    return {
+        ...createBaseEvent(title),
+        kind: "DAY_EVENT",
+        date: date.toISOString(),
+        startTime: new Date(date.setHours(startTime)).toISOString(),
+        endTime: new Date(date.setHours(endTime)).toISOString(),
+    };
+}
 
+function createFullDayEvent(title: string, from: Date, to: Date) {
+    return {
+        ...createBaseEvent(title),
+        kind: "FULL_DAY_EVENT",
+        from: from.toISOString(),
+        to: to.toISOString(),
+    };
+}
+
+function getLastWeekIndexOfMonth(selectedMonth: Date): number {
+    const year = selectedMonth.getFullYear();
+    const month = selectedMonth.getMonth();
+
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    const daysInMonth = lastDayOfMonth.getDate();
+
+    return Math.ceil((daysInMonth + firstDayOfWeek) / 7) - 1;
+}
+
+const LOCALE = "en-GB";
+const YEAR = 2024;
+const MONTH = 10;
+const DAY = 7;
+const fixedDate = new Date(YEAR, MONTH, DAY);
+
+const events = [
+    createFullDayEvent(
+        "Test Event 1",
+        new Date(YEAR, MONTH, 5),
+        new Date(YEAR, MONTH, 19)
+    ),
+    createDayEvent("Test Event 2", new Date(YEAR, MONTH, 7), 10, 11),
+    createDayEvent("Test Event 3", new Date(YEAR, MONTH - 1, 10), 9, 10),
+    createFullDayEvent(
+        "Test Event 4",
+        new Date(YEAR, MONTH + 1, 10),
+        new Date(YEAR, MONTH + 1, 13)
+    ),
+    createDayEvent("Test Leap Event 1", new Date(YEAR, MONTH - 1, 29), 10, 11),
+    createDayEvent("Test Leap Event 2", new Date(YEAR, MONTH, 30), 10, 11),
+];
+
+describe("Calendar", () => {
     beforeEach(() => {
         cy.visit("/");
         cy.clock(fixedDate.getTime());
-        cy.mockDateTimeFormat();
+        cy.mockDateTimeFormat(LOCALE);
 
         cy.window().then(win => {
             win.localStorage.setItem("EVENTS", JSON.stringify(events));
         });
     });
 
-    it("renders current month and year", () => {
+    it("displays the current month and year", () => {
         cy.contains(`November ${YEAR}`);
     });
 
-    it("renders week days", () => {
+    it("displays the week days", () => {
         cy.contains(/sun/i);
         cy.contains(/mon/i);
         cy.contains(/tue/i);
@@ -91,7 +93,7 @@ describe("calendar", () => {
         cy.contains(/sat/i);
     });
 
-    it("renders calendar days of current month", () => {
+    it("displays the calendar days of the current month", () => {
         const startDate = new Date(YEAR, 9, 28);
         const endDate = new Date(YEAR, 11, 1);
 
@@ -113,7 +115,7 @@ describe("calendar", () => {
         }
     });
 
-    it("highlight current day", () => {
+    it("highlights the current day in the calendar", () => {
         const currentDayTestId = `day-${fixedDate.getDate()}-${fixedDate.getMonth()}`;
 
         cy.getByTestId(currentDayTestId).should("have.class", "bg-blue-500");
@@ -125,86 +127,74 @@ describe("calendar", () => {
             });
     });
 
-    it("navigates to next month", () => {
-        cy.getByTestId("next-month-button").click();
-        cy.contains(`December ${YEAR}`);
+    describe("Navigation", () => {
+        it("navigates to the next month and displays it", () => {
+            cy.getByTestId("next-month-button").click();
+            cy.contains(`December ${YEAR}`);
+        });
+
+        it("navigates to the previous month and displays it", () => {
+            cy.getByTestId("previous-month-button").click();
+            cy.contains(`October ${YEAR}`);
+        });
+
+        it("navigates back to the current month and displays it", () => {
+            cy.getByTestId("previous-month-button").click();
+            cy.getByTestId("previous-month-button").click();
+            cy.getByTestId("previous-month-button").click();
+            cy.getByTestId("previous-month-button").click();
+            cy.getByTestId("today-button").click();
+            cy.contains(`November ${YEAR}`);
+        });
+
+        it("does not highlight the current day when viewing previous or next month", () => {
+            cy.getByTestId("previous-month-button").click();
+            cy.get("[data-testid^='day-']").should(
+                "not.have.class",
+                "bg-blue-500"
+            );
+
+            cy.getByTestId("next-month-button").click();
+            cy.getByTestId("next-month-button").click();
+            cy.get("[data-testid^='day-']").should(
+                "not.have.class",
+                "bg-blue-500"
+            );
+        });
     });
 
-    it("navigates to previous month", () => {
-        cy.getByTestId("previous-month-button").click();
-        cy.contains(`October ${YEAR}`);
-    });
+    describe("Events", () => {
+        it("displays the calendar events", () => {
+            cy.contains("Test Event 1");
+            cy.contains("Test Event 2");
+        });
 
-    it("navigates back to current month", () => {
-        cy.getByTestId("previous-month-button").click();
-        cy.getByTestId("previous-month-button").click();
-        cy.getByTestId("previous-month-button").click();
-        cy.getByTestId("previous-month-button").click();
-        cy.getByTestId("today-button").click();
-        cy.contains(`November ${YEAR}`);
-    });
+        it("displays full day events correctly", () => {
+            cy.getByTestId("events-list-1").within(() => {
+                cy.contains("Test Event 1");
+            });
 
-    it("previous or next month should not have current day highlighted", () => {
-        cy.getByTestId("previous-month-button").click();
-        cy.get("[data-testid^='day-']").should("not.have.class", "bg-blue-500");
+            cy.getByTestId("events-list-2").within(() => {
+                cy.contains("Test Event 1");
+            });
 
-        cy.getByTestId("next-month-button").click();
-        cy.getByTestId("next-month-button").click();
-        cy.get("[data-testid^='day-']").should("not.have.class", "bg-blue-500");
-    });
+            cy.getByTestId("events-list-3").within(() => {
+                cy.contains("Test Event 1");
+            });
+        });
 
-    it("renders calendar events", () => {
-        cy.contains("Test Event 1");
-        cy.contains("Test Event 2");
-    });
+        it("displays full day events spanning multiple months correctly", () => {
+            const FROM_MONTH = 9;
+            const TO_MONTH = 4;
+            let currentMonth = FROM_MONTH;
+            let currentYear = YEAR;
 
-    it("renders leap events", () => {
-        cy.contains("Test Leap Event 1");
-        cy.contains("Test Leap Event 2");
-        cy.getByTestId("previous-month-button").click();
-        cy.contains("Test Leap Event 1");
-        cy.contains("Test Leap Event 2").should("not.exist");
-        cy.getByTestId("next-month-button").click();
-        cy.getByTestId("next-month-button").click();
-        cy.contains("Test Leap Event 1").should("not.exist");
-        cy.contains("Test Leap Event 2");
-    });
-
-    it("should not render events from other months", () => {
-        cy.contains("Test Event 3").should("not.exist");
-        cy.contains("Test Event 4").should("not.exist");
-
-        cy.getByTestId("previous-month-button").click();
-        cy.contains("Test Event 3");
-        cy.contains("Test Event 4").should("not.exist");
-
-        cy.getByTestId("next-month-button").click();
-        cy.getByTestId("next-month-button").click();
-        cy.contains("Test Event 3").should("not.exist");
-        cy.contains("Test Event 4");
-    });
-
-    describe("Sorting full day events", () => {
-        it("sorts events by date", () => {
             const events = [
-                {
-                    title: "Test Event 1",
-                    description: "",
-                    color: "pink",
-                    id: "ef16ec9f-5a05-431d-81dc-8eb756df4470",
-                    kind: "FULL_DAY_EVENT",
-                    from: "2024-11-03T23:00:00.000Z",
-                    to: "2024-11-06T23:00:00.000Z",
-                },
-                {
-                    title: "Test Event 2",
-                    description: "",
-                    color: "pink",
-                    kind: "FULL_DAY_EVENT",
-                    from: "2024-11-04T23:00:00.000Z",
-                    to: "2024-11-09T23:00:00.000Z",
-                    id: "c1b9cd5e-a2fa-4afd-a3a4-bf068abcb551",
-                },
+                createFullDayEvent(
+                    "Test Event 1",
+                    new Date(YEAR, FROM_MONTH, 28),
+                    new Date(YEAR + 1, TO_MONTH, 4)
+                ),
             ];
 
             cy.window().then(win => {
@@ -213,16 +203,124 @@ describe("calendar", () => {
 
             cy.visit("/");
 
-            cy.contains("Test Event 1");
-            cy.contains("Test Event 2");
+            for (let i = 0; i <= Math.abs(FROM_MONTH - TO_MONTH); i++) {
+                if (currentMonth % 12 === 0) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+
+                const lastWeekIndex = getLastWeekIndexOfMonth(
+                    new Date(currentYear, currentMonth)
+                );
+
+                for (let j = 0; j <= lastWeekIndex; j++) {
+                    cy.getByTestId(`events-list-${j}`).within(() => {
+                        cy.contains("Test Event 1");
+                    });
+                }
+
+                cy.getByTestId("next-month-button").click();
+            }
+        });
+
+        it("displays leap year events correctly", () => {
+            cy.contains("Test Leap Event 1");
+            cy.contains("Test Leap Event 2");
+            cy.getByTestId("previous-month-button").click();
+            cy.contains("Test Leap Event 1");
+            cy.contains("Test Leap Event 2").should("not.exist");
+            cy.getByTestId("next-month-button").click();
+            cy.getByTestId("next-month-button").click();
+            cy.contains("Test Leap Event 1").should("not.exist");
+            cy.contains("Test Leap Event 2");
+        });
+
+        it("does not display events from other months", () => {
+            cy.contains("Test Event 3").should("not.exist");
+            cy.contains("Test Event 4").should("not.exist");
+
+            cy.getByTestId("previous-month-button").click();
+            cy.contains("Test Event 1").should("not.exist");
+            cy.contains("Test Event 2").should("not.exist");
+            cy.contains("Test Event 3");
+            cy.contains("Test Event 4").should("not.exist");
+
+            cy.getByTestId("next-month-button").click();
+            cy.getByTestId("next-month-button").click();
+            cy.contains("Test Event 1").should("not.exist");
+            cy.contains("Test Event 2").should("not.exist");
+            cy.contains("Test Event 3").should("not.exist");
+            cy.contains("Test Event 4");
         });
     });
 
-    // it("passes", () => {
-    //     cy.getByTestId("day-3-10").click();
-    //     cy.getByTestId("title-input").type("Test event");
-    //     cy.getByTestId("description-input").type("Test description");
-    //     cy.getByTestId("radio-label-green").click();
-    //     cy.getByTestId("save-form-button").click();
-    // });
+    describe("Overflow Events", () => {
+        const numOfEvents = 7;
+        const events = Array.from({ length: numOfEvents }, (_, i) => {
+            return createDayEvent(
+                `Test Event ${i + 1}`,
+                new Date(YEAR, MONTH, DAY),
+                i,
+                i + 1
+            );
+        });
+
+        beforeEach(() => {
+            cy.visit("/");
+            cy.clock(fixedDate.getTime());
+            cy.mockDateTimeFormat(LOCALE);
+
+            cy.window().then(win => {
+                win.localStorage.setItem("EVENTS", JSON.stringify(events));
+            });
+        });
+
+        it("displays the overflow button with the correct number of additional events", () => {
+            cy.contains("3 další");
+        });
+
+        it("opens and closes the overflow popover", () => {
+            cy.getByTestId(`overflow-button-${DAY}-${MONTH}`).click();
+            cy.getByTestId("popover-content");
+
+            cy.getByTestId("popover-close-button").click();
+            cy.getByTestId("popover-content").should("not.exist");
+        });
+
+        it("displays events inside the overflow popover", () => {
+            cy.getByTestId(`overflow-button-${DAY}-${MONTH}`).click();
+            cy.getByTestId("popover-content").within(() => {
+                Array.from({ length: numOfEvents }).forEach((_, i) => {
+                    cy.contains(`Test Event ${i + 1}`);
+                });
+            });
+        });
+
+        it("displays the correct date in the overflow popover", () => {
+            cy.getByTestId(`overflow-button-${DAY}-${MONTH}`).click();
+            cy.getByTestId("popover-content").contains(
+                fixedDate.toLocaleDateString(LOCALE, {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                })
+            );
+        });
+
+        it("displays the correct number of additional events when viewport changes", () => {
+            cy.contains("3 další");
+
+            cy.viewport(1920, 800);
+            cy.contains("5 další");
+
+            cy.viewport(1920, 500);
+            cy.contains("7 další");
+
+            cy.viewport(1920, 800);
+            cy.contains("5 další");
+
+            cy.viewport(1920, 1080);
+            cy.contains("3 další");
+        });
+    });
 });

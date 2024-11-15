@@ -13,6 +13,7 @@ type CalendarEventsListProps = {
     events: CalendarEventCell[];
     daysOfWeek: Date[];
     draftEvent: CalendarEventCell | undefined | null;
+    index: number;
 };
 
 type OverflowEvent = {
@@ -24,6 +25,7 @@ type OverflowEvent = {
 function CalendarEventsList({
     events,
     daysOfWeek,
+    index,
     draftEvent,
 }: CalendarEventsListProps) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -106,6 +108,7 @@ function CalendarEventsList({
         <div
             className="grid grid-cols-subgrid grid-flow-dense col-span-full auto-rows-min pt-8 gap-y-1 overflow-hidden"
             ref={containerRef}
+            data-testid={`events-list-${index}`}
         >
             {draftEvent && (
                 <div className="grid grid-cols-subgrid col-span-full z-50">

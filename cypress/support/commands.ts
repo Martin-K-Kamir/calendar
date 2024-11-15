@@ -29,7 +29,7 @@ Cypress.Commands.add("getByTestId", (testId: string) => {
     return cy.get(`[data-testid='${testId}']`);
 });
 
-Cypress.Commands.add("mockDateTimeFormat", (locale = "en-GB") => {
+Cypress.Commands.add("mockDateTimeFormat", locale => {
     cy.window().then(win => {
         const originalDateTimeFormat = win.Intl.DateTimeFormat;
 
@@ -49,7 +49,7 @@ declare global {
     namespace Cypress {
         interface Chainable {
             getByTestId(testId: string): Chainable<JQuery<HTMLElement>>;
-            mockDateTimeFormat(local?: string): Chainable<void>;
+            mockDateTimeFormat(local: string): Chainable<void>;
         }
     }
 }

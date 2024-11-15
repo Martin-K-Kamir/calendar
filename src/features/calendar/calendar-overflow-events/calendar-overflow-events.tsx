@@ -25,12 +25,14 @@ function CalendarOverflowEvents({
     daysOfWeek,
     events,
 }: CalendarOverflowEventsProps) {
+    const date = daysOfWeek[colStart - 1];
+
     return (
         <Popover>
             <PopoverTrigger asChild>
                 <button
                     className="block w-full pointer-events-auto px-2 py-[3px] rounded-md text-xs font-semibold text-left bg-white text-zinc-900 hover:bg-zinc-100 dark:text-white dark:bg-zinc-950 dark:hover:bg-zinc-800"
-                    data-testid="popover-trigger"
+                    data-testid={`overflow-button-${date.getDate()}-${date.getMonth()}`}
                 >
                     {amount} další
                 </button>
@@ -52,7 +54,7 @@ function CalendarOverflowEvents({
                     </Button>
                 </PopoverClose>
                 <p className="pb-4 text-md font-semibold">
-                    {formatLongDate(daysOfWeek[colStart - 1])}
+                    {formatLongDate(date)}
                 </p>
                 <ScrollArea>
                     <div className="space-y-1.5 pr-4 max-h-72">

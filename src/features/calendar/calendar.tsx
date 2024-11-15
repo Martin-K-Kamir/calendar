@@ -47,6 +47,7 @@ function Calendar() {
                                 events={events}
                                 draftEvent={calendarDraftEvent?.[index]}
                                 daysOfWeek={calendarWeeksWithDays[index]}
+                                index={index}
                             />
                         ))}
                     </div>

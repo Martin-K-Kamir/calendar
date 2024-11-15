@@ -88,7 +88,9 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     return (
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-                <button className="block w-full">{eventItem}</button>
+                <button className="block w-full" data-testid={event.id}>
+                    {eventItem}
+                </button>
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"

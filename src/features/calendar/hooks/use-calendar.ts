@@ -7,6 +7,9 @@ import {
     endOfDay,
     startOfWeek,
     endOfWeek,
+    endOfMonth,
+    startOfMonth,
+    isWithinInterval,
 } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
 import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
@@ -82,11 +85,17 @@ function useCalendar() {
         const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
 
         sortedEvents.forEach(event =>
-            categorizeEvent(event, calendarWeeks, eventsMatrix, weekStartDay)
+            categorizeEvent(
+                event,
+                calendarWeeks,
+                eventsMatrix,
+                selectedMonth,
+                weekStartDay
+            )
         );
 
         return eventsMatrix;
-    }, [calendarWeeks, sortedEvents, weekStartDay]);
+    }, [calendarWeeks, sortedEvents, weekStartDay, selectedMonth]);
 
     const calendarDraftEvent = useMemo(() => {
         if (draftEvent == null) {
@@ -95,7 +104,13 @@ function useCalendar() {
 
         const eventsMatrix: CalendarEventCell[][] = calendarWeeks.map(() => []);
 
-        categorizeEvent(draftEvent, calendarWeeks, eventsMatrix, weekStartDay);
+        categorizeEvent(
+            draftEvent,
+            calendarWeeks,
+            eventsMatrix,
+            selectedMonth,
+            weekStartDay
+        );
 
         return eventsMatrix.map(week => {
             const [event] = week;
@@ -136,10 +151,17 @@ function categorizeEvent(
     event: Event,
     weeks: Date[],
     matrix: CalendarEventCell[][],
+    selectedMonth: Date,
     weekStartDay: WeekStartsOn
 ) {
     if (event.kind === "FULL_DAY_EVENT") {
-        categorizeFullDayEvent(event, weeks, matrix, weekStartDay);
+        categorizeFullDayEvent(
+            event,
+            weeks,
+            matrix,
+            selectedMonth,
+            weekStartDay
+        );
     } else if (event.kind === "DAY_EVENT") {
         categorizeDayEvent(event, weeks, matrix, weekStartDay);
     } else {
@@ -152,6 +174,7 @@ function categorizeFullDayEvent(
     event: FullDayEvent,
     weeks: Date[],
     matrix: CalendarEventCell[][],
+    selectedMonth: Date,
     weekStartDay: WeekStartsOn
 ) {
     const from = startOfDay(event.from);
@@ -160,14 +183,20 @@ function categorizeFullDayEvent(
     const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
     const isOverlappingBefore = hasOverlapingWeek(endWeekIndex, startWeekIndex);
     const isOverlappingAfter = hasOverlapingWeek(startWeekIndex, endWeekIndex);
+    const isInDateRange = isDateRangeInMonth(from, to, selectedMonth);
+    let lastWeekIndexOfMonth = 0;
 
-    if (startWeekIndex === -1 && endWeekIndex === -1) {
+    if (startWeekIndex === -1 && endWeekIndex === -1 && !isInDateRange) {
         return;
+    }
+
+    if ((startWeekIndex === 1 || endWeekIndex === -1) && isInDateRange) {
+        lastWeekIndexOfMonth = weeks.length - 1;
     }
 
     for (
         let i = Math.max(startWeekIndex, 0);
-        i <= Math.max(endWeekIndex, startWeekIndex);
+        i <= Math.max(endWeekIndex, startWeekIndex, lastWeekIndexOfMonth);
         i++
     ) {
         matrix[i].push({
@@ -192,7 +221,7 @@ function categorizeDayEvent(
     event: DayEvent,
     weeks: Date[],
     matrix: CalendarEventCell[][],
-    weekStartDay: 0 | 1 = 0
+    weekStartDay: WeekStartsOn
 ) {
     const day = startOfDay(event.date);
     const weekIndex = getWeekIndex(weeks, day, weekStartDay);
@@ -212,6 +241,27 @@ function categorizeDayEvent(
 
 function hasOverlapingWeek(a: number, b: number) {
     return a === -1 && b > a;
+}
+
+function isDateRangeInMonth(
+    from: Date,
+    to: Date,
+    selectedMonth: Date
+): boolean {
+    const startOfSelectedMonth = startOfMonth(selectedMonth);
+    const endOfSelectedMonth = endOfMonth(selectedMonth);
+
+    return (
+        isWithinInterval(from, {
+            start: startOfSelectedMonth,
+            end: endOfSelectedMonth,
+        }) ||
+        isWithinInterval(to, {
+            start: startOfSelectedMonth,
+            end: endOfSelectedMonth,
+        }) ||
+        (from < startOfSelectedMonth && to > endOfSelectedMonth)
+    );
 }
 
 export { type CalendarEventCell as CalendarEventCell, useCalendar };

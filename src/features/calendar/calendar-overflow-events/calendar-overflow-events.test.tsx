@@ -90,11 +90,13 @@ const mockEvents: CalendarEventCell[] = [
     },
 ];
 
+const DAY = 4;
+
 const mockData = {
     amount: 3,
     colStart: 1,
     colEnd: 2,
-    daysOfWeek: [new Date(YEAR, MONTH, 4)],
+    daysOfWeek: [new Date(YEAR, MONTH, DAY)],
     events: mockEvents,
 };
 
@@ -131,7 +133,7 @@ describe("CalendarOverflowEvents Component", () => {
     it("opens and closes the popover", () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        fireEvent.click(screen.getByTestId("popover-trigger"));
+        fireEvent.click(screen.getByTestId(`overflow-button-${DAY}-${MONTH}`));
         expect(screen.getByTestId("popover-content")).toBeDefined();
 
         fireEvent.click(screen.getByTestId("popover-close-button"));
@@ -141,7 +143,9 @@ describe("CalendarOverflowEvents Component", () => {
     it("renders events inside the popover", async () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        await userEvent.click(screen.getByTestId("popover-trigger"));
+        await userEvent.click(
+            screen.getByTestId(`overflow-button-${DAY}-${MONTH}`)
+        );
         expect(screen.getByTestId("popover-content")).toBeDefined();
 
         mockData.events.forEach(event => {
@@ -152,7 +156,7 @@ describe("CalendarOverflowEvents Component", () => {
     it("displays the correct day name in the popover header", async () => {
         render(<CalendarOverflowEvents {...mockData} />);
 
-        fireEvent.click(screen.getByTestId("popover-trigger"));
+        fireEvent.click(screen.getByTestId(`overflow-button-${DAY}-${MONTH}`));
         expect(screen.getByTestId("popover-content")).toBeDefined();
 
         const dayName = lib.formatLongDate(
