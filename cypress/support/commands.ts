@@ -35,6 +35,7 @@ Cypress.Commands.add("mockDateTimeFormat", locale => {
 
         win.Intl.DateTimeFormat = function (
             _: never,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             options: Record<string, any>
         ) {
             return new originalDateTimeFormat(locale, options);
@@ -46,6 +47,7 @@ Cypress.Commands.add("mockDateTimeFormat", locale => {
 });
 
 declare global {
+    // eslint-disable-next-line
     namespace Cypress {
         interface Chainable {
             getByTestId(testId: string): Chainable<JQuery<HTMLElement>>;

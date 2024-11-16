@@ -109,7 +109,7 @@ function useCalendar() {
 
             return event;
         });
-    }, [calendarWeeks, draftEvent, weekStartDay]);
+    }, [calendarWeeks, draftEvent, weekStartDay, selectedMonth]);
 
     function handleNextMonth() {
         setSelectedMonth(prev => addMonths(prev, 1));

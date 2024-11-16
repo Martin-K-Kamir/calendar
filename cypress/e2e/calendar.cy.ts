@@ -539,8 +539,10 @@ describe("Calendar", () => {
                     win.localStorage.getItem("EVENTS") || "[]"
                 );
                 const createdEvent = storedEvents.find(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (e: any) => e.title === "Test Event"
                 );
+                // eslint-disable-next-line
                 expect(createdEvent).to.exist;
             });
         });
@@ -815,6 +817,7 @@ describe("Calendar", () => {
                     win.localStorage.getItem("EVENTS") || "[]"
                 );
                 const updatedEvent = storedEvents.find(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (e: any) => e.id === event1.id
                 );
                 expect(updatedEvent.title).to.equal("Updated Event");

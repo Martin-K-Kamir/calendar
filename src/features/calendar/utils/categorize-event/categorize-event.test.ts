@@ -46,7 +46,7 @@ describe("categorizeEvent()", () => {
     });
 
     it("should throw an error for unhandled event kind", () => {
-        // @ts-expect-error
+        // @ts-expect-error Unhandled event kind
         const event: Event = { kind: "UNKNOWN_EVENT" } as Event;
 
         expect(() =>
