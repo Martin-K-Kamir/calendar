@@ -115,6 +115,7 @@ function CalendarEventsList({
                     <div
                         className="px-1.5"
                         data-draft-event-item
+                        data-testid="draft-event-item"
                         style={{
                             gridColumnStart: draftEvent.colStart,
                             gridColumnEnd: draftEvent.colEnd,

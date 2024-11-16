@@ -10,6 +10,7 @@ import {
     endOfMonth,
     startOfMonth,
     isWithinInterval,
+    isSameMonth,
 } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
 import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
@@ -190,7 +191,7 @@ function categorizeFullDayEvent(
         return;
     }
 
-    if ((startWeekIndex === 1 || endWeekIndex === -1) && isInDateRange) {
+    if (isInDateRange && endWeekIndex === -1) {
         lastWeekIndexOfMonth = weeks.length - 1;
     }
 

@@ -244,6 +244,7 @@ function CalendarEventForm({
                                                 numberOfMonths={2}
                                                 locale={cs}
                                                 initialFocus
+                                                data-testid="calendar-range"
                                             />
                                         </PopoverContent>
                                     </Popover>
@@ -258,7 +259,7 @@ function CalendarEventForm({
                             name="startTime"
                             control={form.control}
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem data-testid="start-time-select">
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -282,9 +283,12 @@ function CalendarEventForm({
                                                 <SelectItem
                                                     key={timeSlot}
                                                     value={timeSlot}
-                                                    data-testid={`start-time-option-${timeSlot}`}
                                                 >
-                                                    {timeSlot}
+                                                    <span
+                                                        data-testid={`start-time-option-${timeSlot}`}
+                                                    >
+                                                        {timeSlot}
+                                                    </span>
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -301,7 +305,7 @@ function CalendarEventForm({
                             name="endTime"
                             control={form.control}
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem data-testid="end-time-select">
                                     <Select
                                         onValueChange={field.onChange}
                                         value={field.value}

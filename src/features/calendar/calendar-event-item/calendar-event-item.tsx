@@ -88,7 +88,10 @@ function CalendarEventItem({ event, className }: CalendarEventItemProps) {
     return (
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-                <button className="block w-full" data-testid={event.id}>
+                <button
+                    className="block w-full"
+                    data-testid={`event-item-${event.id}`}
+                >
                     {eventItem}
                 </button>
             </PopoverTrigger>
@@ -173,7 +176,10 @@ type FullDayEventItemProps = VariantProps<typeof fullDayEventItemVariants> &
 
 function FullDayEventItem({ color, title, className }: FullDayEventItemProps) {
     return (
-        <span className={cn(fullDayEventItemVariants({ color, className }))}>
+        <span
+            className={cn(fullDayEventItemVariants({ color, className }))}
+            data-kind="full-day-event"
+        >
             {title}
         </span>
     );
@@ -207,8 +213,11 @@ function DayEventItem({
     className,
 }: DayEventItemProps) {
     return (
-        <span className={cn(dayEventItemVariants({ color, className }))}>
-            <i className="size-2 inline-block rounded-full mr-1.5"></i>
+        <span
+            className={cn(dayEventItemVariants({ color, className }))}
+            data-kind="day-event"
+        >
+            <i className="size-2 inline-block rounded-full mr-1.5" />
             <span className="text-zinc-600 dark:text-zinc-400">
                 {formatTime(startTime)}
             </span>
@@ -236,7 +245,7 @@ function EventItemPreview({
             <div className="grid grid-cols-[min-content,auto] items-baseline gap-3">
                 <span
                     className={`inline-block size-3.5 rounded bg-${color}-600 translate-y-px`}
-                ></span>
+                />
                 <p className="text-lg font-semibold line-clamp-2">{title}</p>
             </div>
 
