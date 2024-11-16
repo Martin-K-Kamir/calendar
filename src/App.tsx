@@ -3,7 +3,7 @@ import { SettingsProvider } from "@/context/settings-provider";
 import { ThemeProvider } from "@/features/theme";
 import { Calendar } from "@/features/calendar";
 
-export default function App() {
+export function App() {
     return (
         <SettingsProvider>
             <ThemeProvider>

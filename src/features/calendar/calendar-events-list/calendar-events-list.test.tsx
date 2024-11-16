@@ -120,6 +120,7 @@ describe("CalendarEventsList Component", () => {
                 events={mockEvents}
                 daysOfWeek={mockDaysOfWeek}
                 draftEvent={null}
+                index={0}
             />
         );
 
@@ -134,6 +135,7 @@ describe("CalendarEventsList Component", () => {
                 events={mockEvents}
                 daysOfWeek={mockDaysOfWeek}
                 draftEvent={mockDraftEvent}
+                index={0}
             />
         );
 
@@ -156,6 +158,7 @@ describe("CalendarEventsList Component", () => {
                 events={mockEvents}
                 daysOfWeek={mockDaysOfWeek}
                 draftEvent={null}
+                index={0}
             />
         );
 
