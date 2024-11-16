@@ -20,7 +20,10 @@ function ThemeToggle() {
                     <span className="sr-only">Toggle theme</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+                align="end"
+                data-testid="theme-popover-content"
+            >
                 <DropdownMenuItem
                     onClick={() => setTheme("light")}
                     data-testid="theme-button-light"

@@ -6,3 +6,4 @@ export * from "./get-calendar-weeks";
 export * from "./get-month-names";
 export * from "./get-weekday-names";
 export * from "./get-calendar-days";
+export * from "./is-date-range-in-month";

@@ -3,29 +3,16 @@ import {
     eachDayOfInterval,
     subMonths,
     addMonths,
-    startOfDay,
-    endOfDay,
     startOfWeek,
     endOfWeek,
-    endOfMonth,
-    startOfMonth,
-    isWithinInterval,
-    isSameMonth,
 } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
-import { getDay, getWeekIndex, getCalendarWeeks, getCalendarDays } from "@/lib";
-import { WeekStartsOn } from "@/types";
+import { getCalendarWeeks, getCalendarDays } from "@/lib";
+import { useEvents, type Event } from "@/features/calendar";
 import {
-    useEvents,
-    type DayEvent,
-    type Event,
-    type FullDayEvent,
-} from "@/features/calendar";
-import {
-    getColStart,
-    getColEnd,
     compareFullDayEvents,
     compareDayEvents,
+    categorizeEvent,
 } from "@/features/calendar/utils";
 
 type Cell = {
@@ -146,123 +133,6 @@ function useCalendar() {
         handlePreviousMonth,
         handleToday,
     } as const;
-}
-
-function categorizeEvent(
-    event: Event,
-    weeks: Date[],
-    matrix: CalendarEventCell[][],
-    selectedMonth: Date,
-    weekStartDay: WeekStartsOn
-) {
-    if (event.kind === "FULL_DAY_EVENT") {
-        categorizeFullDayEvent(
-            event,
-            weeks,
-            matrix,
-            selectedMonth,
-            weekStartDay
-        );
-    } else if (event.kind === "DAY_EVENT") {
-        categorizeDayEvent(event, weeks, matrix, weekStartDay);
-    } else {
-        const exhaustiveCheck: never = event;
-        throw new Error(`Unhandled event kind: ${exhaustiveCheck}`);
-    }
-}
-
-function categorizeFullDayEvent(
-    event: FullDayEvent,
-    weeks: Date[],
-    matrix: CalendarEventCell[][],
-    selectedMonth: Date,
-    weekStartDay: WeekStartsOn
-) {
-    const from = startOfDay(event.from);
-    const to = endOfDay(event.to);
-    const startWeekIndex = getWeekIndex(weeks, from, weekStartDay);
-    const endWeekIndex = getWeekIndex(weeks, to, weekStartDay);
-    const isOverlappingBefore = hasOverlapingWeek(endWeekIndex, startWeekIndex);
-    const isOverlappingAfter = hasOverlapingWeek(startWeekIndex, endWeekIndex);
-    const isInDateRange = isDateRangeInMonth(from, to, selectedMonth);
-    let lastWeekIndexOfMonth = 0;
-
-    if (startWeekIndex === -1 && endWeekIndex === -1 && !isInDateRange) {
-        return;
-    }
-
-    if (isInDateRange && endWeekIndex === -1) {
-        lastWeekIndexOfMonth = weeks.length - 1;
-    }
-
-    for (
-        let i = Math.max(startWeekIndex, 0);
-        i <= Math.max(endWeekIndex, startWeekIndex, lastWeekIndexOfMonth);
-        i++
-    ) {
-        matrix[i].push({
-            event,
-            colStart: getColStart(
-                i,
-                startWeekIndex,
-                getDay(from, weekStartDay),
-                isOverlappingAfter
-            ),
-            colEnd: getColEnd(
-                i,
-                endWeekIndex,
-                getDay(to, weekStartDay),
-                isOverlappingBefore
-            ),
-        });
-    }
-}
-
-function categorizeDayEvent(
-    event: DayEvent,
-    weeks: Date[],
-    matrix: CalendarEventCell[][],
-    weekStartDay: WeekStartsOn
-) {
-    const day = startOfDay(event.date);
-    const weekIndex = getWeekIndex(weeks, day, weekStartDay);
-
-    if (weekIndex === -1) {
-        return;
-    }
-
-    const dayOfWeek = getDay(day, weekStartDay);
-
-    matrix[weekIndex].push({
-        event,
-        colStart: dayOfWeek + 1,
-        colEnd: dayOfWeek + 2,
-    });
-}
-
-function hasOverlapingWeek(a: number, b: number) {
-    return a === -1 && b > a;
-}
-
-function isDateRangeInMonth(
-    from: Date,
-    to: Date,
-    selectedMonth: Date
-): boolean {
-    const startOfSelectedMonth = startOfMonth(selectedMonth);
-    const endOfSelectedMonth = endOfMonth(selectedMonth);
-
-    return (
-        isWithinInterval(from, {
-            start: startOfSelectedMonth,
-            end: endOfSelectedMonth,
-        }) ||
-        isWithinInterval(to, {
-            start: startOfSelectedMonth,
-            end: endOfSelectedMonth,
-        }) ||
-        (from < startOfSelectedMonth && to > endOfSelectedMonth)
-    );
 }
 
 export { type CalendarEventCell as CalendarEventCell, useCalendar };
