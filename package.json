@@ -6,9 +6,11 @@
     "scripts": {
         "dev": "vite --host",
         "build": "tsc -b && vite build",
+        "build:prod": "npm run test && npm run cy:run && npm run build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "test": "vitest run --coverage --reporter verbose",
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage --reporter verbose",
         "test:watch": "vitest --watch",
         "test:ui": "vitest --ui --coverage.enabled=true",
         "test:all": "npm run lint && npm run test && npm run cypress:run",
