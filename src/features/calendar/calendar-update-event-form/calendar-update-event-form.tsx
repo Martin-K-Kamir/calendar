@@ -12,6 +12,7 @@ import {
     eventFormSchema,
     EVENT_COLORS,
     FULL_DAY_EVENT,
+    DAY_EVENT,
     type Event,
 } from "@/features/calendar";
 
@@ -68,7 +69,7 @@ function CalendarUpdateEventForm({
         if (fullDay) {
             updateEvent({
                 ...baseEvent,
-                kind: "FULL_DAY_EVENT",
+                kind: FULL_DAY_EVENT,
                 from: dateRange.from,
                 to: dateRange.to,
             });
@@ -76,7 +77,7 @@ function CalendarUpdateEventForm({
             updateEvent({
                 ...baseEvent,
                 date,
-                kind: "DAY_EVENT",
+                kind: DAY_EVENT,
                 startTime: parseTimeString(startTime),
                 endTime: parseTimeString(endTime),
             });

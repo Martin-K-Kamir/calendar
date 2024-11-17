@@ -8,7 +8,12 @@ import {
 } from "date-fns";
 import { useSettings } from "@/hooks/use-settings";
 import { getCalendarWeeks, getCalendarDays } from "@/lib";
-import { useEvents, type Event } from "@/features/calendar";
+import {
+    useEvents,
+    FULL_DAY_EVENT,
+    DAY_EVENT,
+    type Event,
+} from "@/features/calendar";
 import {
     compareFullDayEvents,
     compareDayEvents,
@@ -39,19 +44,19 @@ function useCalendar() {
 
     const sortedEvents = useMemo(() => {
         return events.sort((a, b) => {
-            if (a.kind === "FULL_DAY_EVENT" && b.kind === "FULL_DAY_EVENT") {
+            if (a.kind === FULL_DAY_EVENT && b.kind === FULL_DAY_EVENT) {
                 return compareFullDayEvents(a, b);
             }
 
-            if (a.kind === "FULL_DAY_EVENT" && b.kind === "DAY_EVENT") {
+            if (a.kind === FULL_DAY_EVENT && b.kind === DAY_EVENT) {
                 return -1;
             }
 
-            if (a.kind === "DAY_EVENT" && b.kind === "FULL_DAY_EVENT") {
+            if (a.kind === DAY_EVENT && b.kind === FULL_DAY_EVENT) {
                 return 1;
             }
 
-            if (a.kind === "DAY_EVENT" && b.kind === "DAY_EVENT") {
+            if (a.kind === DAY_EVENT && b.kind === DAY_EVENT) {
                 return compareDayEvents(a, b);
             }
 

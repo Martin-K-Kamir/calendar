@@ -129,7 +129,7 @@ function loadEventsFromLocalStorage() {
         return value;
     });
 
-    return parsedEvents;
+    return parsedEvents as Event[];
 }
 
 function saveEventsToLocalStorage(events: Event[]) {

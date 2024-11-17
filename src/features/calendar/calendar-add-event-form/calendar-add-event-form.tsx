@@ -12,6 +12,8 @@ import {
     eventFormSchema,
     useEvents,
     EVENT_COLORS,
+    FULL_DAY_EVENT,
+    DAY_EVENT,
     type Event,
 } from "@/features/calendar";
 
@@ -61,7 +63,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
             if (fullDay) {
                 addDraftEvent({
                     ...baseEvent,
-                    kind: "FULL_DAY_EVENT",
+                    kind: FULL_DAY_EVENT,
                     from: dateRange.from,
                     to: dateRange.to,
                 });
@@ -69,7 +71,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
                 addDraftEvent({
                     ...baseEvent,
                     date,
-                    kind: "DAY_EVENT",
+                    kind: DAY_EVENT,
                     startTime: parseTimeString(startTime),
                     endTime: parseTimeString(endTime),
                 });
@@ -100,7 +102,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
         if (fullDay) {
             eventId = addEvent({
                 ...baseEvent,
-                kind: "FULL_DAY_EVENT",
+                kind: FULL_DAY_EVENT,
                 from: dateRange.from,
                 to: dateRange.to,
             });
@@ -108,7 +110,7 @@ function CalendarAddEventForm({ date, onAddEvent }: CalendarAddEventFormProps) {
             eventId = addEvent({
                 ...baseEvent,
                 date,
-                kind: "DAY_EVENT",
+                kind: DAY_EVENT,
                 startTime: parseTimeString(startTime),
                 endTime: parseTimeString(endTime),
             });
