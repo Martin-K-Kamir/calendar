@@ -27,8 +27,6 @@ There are a bunch of cool features I didn’t get to yet, but I plan to come bac
     -   Highlight past days or events.
     -   Other settings like you’d find in Google Calendar.
 
-Even though these features aren’t done yet, I’m planning to come back to this project to finish them. Plus, I want to try out some new tech while I’m at it!
-
 ### Future Ideas & Tech Updates
 
 Here are some things I want to add or improve in the future:
