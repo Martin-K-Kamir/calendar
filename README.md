@@ -53,7 +53,7 @@ Here are some things I want to add or improve in the future:
 -   **Tailwind CSS**
 -   **Shadcn/ui**
 
-### Links
+## Links
 
 -   [Live Site](https://calendar-clone-mkk.netlify.app/)
 
