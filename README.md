@@ -1,8 +1,21 @@
-# Calendar Clone
+# Calendar
 
 This project is a calendar application built with **React**, **TypeScript**, and **Vite**. It allows users to create, update, and manage events on a calendar. The application supports both full-day and timed events and includes features such as event overflow handling and theme toggling.
 
 For this project, I focused on improving my skills in TypeScript and testing. Since this is my first side project using these technologies, I am quite happy with how it turned out. However, I recognize that there is still a lot to learn and explore.
+
+## Tech Stack
+
+-   **React**
+-   **TypeScript**
+-   **Vite**
+-   **Cypress**
+-   **Vitest**
+-   **React Testing Library**
+-   **React Hook Form**
+-   **Zod**
+-   **Tailwind CSS**
+-   **Shadcn UI**
 
 ## Features
 
@@ -37,19 +50,6 @@ Here are some things I want to add or improve in the future:
 -   **Supabase**: Store events in a database using Supabase, instead of localStorage.
 -   **Change Cypress to Playwright**: I want to study more on Cypress but also learn Playwright. I think they are both great for end-to-end testing, and I would like to see the differences.
 -   **Different Calendar Views**: To be able to see day, week, and year calendar views with the hours.
-
-## Tech Stack
-
--   **React**
--   **TypeScript**
--   **Vite**
--   **Cypress**
--   **Vitest**
--   **React Testing Library**
--   **React Hook Form**
--   **Zod**
--   **Tailwind CSS**
--   **Shadcn/ui**
 
 ## Links
 
