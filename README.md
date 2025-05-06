@@ -1,4 +1,4 @@
-# Calendar
+# Calenda
 
 This project is a calendar application built with **React**, **TypeScript**, and **Vite**. It allows users to create, update, and manage events on a calendar. The application supports both full-day and timed events and includes features such as event overflow handling and theme toggling.
 
